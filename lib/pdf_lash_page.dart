@@ -90,6 +90,7 @@ class LayerPreviewLashPageState extends State<PreviewLashPage> {
     // final dir = await getApplicationDocumentsDirectory();
     final dir = await getDownloadDirectory(); // ke folder download
     // final file = File("${param.appDir}/Laporan_LASH.pdf");
+    
     final file = File(
         '${dir.path}/LASH_${widget.user.fdKodeSF}_${widget.startDayDate.replaceAll('-', '')}.pdf');
     await file.writeAsBytes(bytes);

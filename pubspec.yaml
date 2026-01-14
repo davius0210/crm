@@ -61,6 +61,7 @@ dependencies:
   ftpconnect: ^2.0.5
   mobile_number: ^3.0.0
   # flutter_jailbreak_detection: ^1.10.0
+  get: ^4.7.3
   shared_preferences: ^2.2.1
   android_id: ^0.5.1
   airplane_mode_checker: ^3.2.0

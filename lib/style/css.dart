@@ -1,13 +1,22 @@
+import 'package:crm_apps/new/helper/color_helper.dart';
 import 'package:flutter/material.dart';
 
 BoxDecoration boxDecorDrawerHeader() {
   return const BoxDecoration(
     //color: Color.fromARGB(255, 176, 255, 165),
-    color: Color.fromARGB(255, 255, 191, 96),
+    color: ColorHelper.primary,
     shape: BoxShape.rectangle,
     borderRadius: BorderRadius.only(topRight: Radius.circular(30)),
   );
 }
+// BoxDecoration boxDecorDrawerHeader() {
+//   return const BoxDecoration(
+//     //color: Color.fromARGB(255, 176, 255, 165),
+//     color: Color.fromARGB(255, 255, 191, 96),
+//     shape: BoxShape.rectangle,
+//     borderRadius: BorderRadius.only(topRight: Radius.circular(30)),
+//   );
+// }
 
 BoxDecoration boxDecorMenuHeader() {
   return BoxDecoration(
@@ -17,9 +26,17 @@ BoxDecoration boxDecorMenuHeader() {
       );
 }
 
+// BoxDecoration boxDecorTitle() {
+//   return BoxDecoration(
+//     color: Color.fromARGB(255, 1, 121, 111),
+//   );
+// }
 BoxDecoration boxDecorTitle() {
   return BoxDecoration(
-    color: Color.fromARGB(255, 1, 121, 111),
+    gradient: LinearGradient(colors: [
+      ColorHelper.primary,
+      ColorHelper.secondary
+    ])
   );
 }
 
@@ -94,17 +111,33 @@ BoxDecoration boxDecorDropdownStyle() {
 InputDecoration textInputStyle(String? hintTxt, TextStyle? txtStyle,
     String? labelTxt, Icon? preIcon, IconButton? postIcon) {
   return InputDecoration(
-      fillColor: const Color.fromARGB(255, 243, 255, 241),
-      filled: true,
-      hintStyle: txtStyle,
       hintText: hintTxt,
+      hintStyle: TextStyle(color: ColorHelper.hint),
       labelText: labelTxt,
       labelStyle: txtStyle,
-      floatingLabelStyle: const TextStyle(fontStyle: FontStyle.normal),
-      border: borderOutlineInputRound(),
-      contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
       prefixIcon: preIcon,
-      suffixIcon: postIcon);
+      suffixIcon: postIcon,
+      fillColor: Colors.white,
+      filled: true,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: BorderSide(color: ColorHelper.border, width: 1),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: BorderSide(color: ColorHelper.border, width: 2),
+      ),
+      errorBorder: OutlineInputBorder(
+        // Border saat validasi salah
+        borderRadius: BorderRadius.circular(10),
+        borderSide: const BorderSide(color: Colors.red, width: 1),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: const BorderSide(color: Colors.red, width: 2),
+      ),
+    );
 }
 
 InputDecoration textCartInputStyle(String? hintTxt, TextStyle? txtStyle,

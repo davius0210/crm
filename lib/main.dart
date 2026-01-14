@@ -2,6 +2,9 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
+import 'package:crm_apps/new/helper/color_helper.dart';
+import 'package:crm_apps/new/helper/function_helper.dart';
+import 'package:crm_apps/new/page/login/view/login_view.dart';
 import 'package:flutter/services.dart';
 // import 'package:flutter_jailbreak_detection/flutter_jailbreak_detection.dart';
 import 'package:installed_apps/app_info.dart';
@@ -538,7 +541,7 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 
 Future<void> main() async {
   // await handlePermission();
-  // WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
 
   //push notif
   // Set the background messaging handler early on, as a named top-level function
@@ -558,8 +561,8 @@ Future<void> main() async {
 
 //sugeng add notif new coding for CRM 30.06.2025
   WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp();
-  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   // Konfigurasi notification untuk Android
   const AndroidInitializationSettings initializationSettingsAndroid =
@@ -571,44 +574,6 @@ Future<void> main() async {
 
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 //sugeng end add notif new coding for CRM 30.06.2025
-
-  runApp(MaterialApp(
-      theme: ThemeData(
-          scaffoldBackgroundColor: Colors.grey.shade300,
-          // scaffoldBackgroundColor: Colors.black,
-          // textTheme: const TextTheme(
-          //   headlineMedium: TextStyle(color: Colors.red),
-          //   bodyMedium: TextStyle(color: Colors.purple),
-          //   labelMedium: TextStyle(color: Colors.green),
-          //   labelLarge: TextStyle(color: Colors.green),
-          //   labelSmall: TextStyle(color: Colors.green),
-          //   displayMedium: TextStyle(color: Colors.green),
-          //   displayLarge: TextStyle(color: Colors.green),
-          //   titleMedium: TextStyle(color: Colors.green),
-          // ),
-          appBarTheme: const AppBarTheme(backgroundColor: Colors.blue),
-          elevatedButtonTheme:
-              ElevatedButtonThemeData(style: css.buttonRound()),
-          textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                  foregroundColor: Color.fromARGB(255, 255, 225, 1),
-                  disabledForegroundColor:
-                      const Color.fromARGB(255, 255, 150, 150))),
-          dialogTheme: DialogThemeData(titleTextStyle: css.textHeaderBold()),
-          bottomAppBarTheme:
-               BottomAppBarThemeData(color: Color.fromARGB(255, 14, 64, 138)),
-          floatingActionButtonTheme: const FloatingActionButtonThemeData(
-              backgroundColor: Color.fromARGB(255, 242, 133, 0))),
-      builder: (context, child) {
-        return MediaQuery(
-            data: MediaQuery.of(context)
-                .copyWith(textScaleFactor: ScaleSize.textScaleFactor(context)),
-            child: child!);
-      },
-      title: 'Login',
-      home: const LoginPage()));
-
-//sugeng add notif new coding for CRM 30.06.2025
   await flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
     onDidReceiveNotificationResponse: (NotificationResponse response) async {
@@ -624,6 +589,42 @@ Future<void> main() async {
       }
     },
   );
+  runApp(MaterialApp(
+      theme: ThemeData(
+          scaffoldBackgroundColor: Colors.grey.shade300,
+          // scaffoldBackgroundColor: Colors.black,
+          // textTheme: const TextTheme(
+          //   headlineMedium: TextStyle(color: Colors.red),
+          //   bodyMedium: TextStyle(color: Colors.purple),
+          //   labelMedium: TextStyle(color: Colors.green),
+          //   labelLarge: TextStyle(color: Colors.green),
+          //   labelSmall: TextStyle(color: Colors.green),
+          //   displayMedium: TextStyle(color: Colors.green),
+          //   displayLarge: TextStyle(color: Colors.green),
+          //   titleMedium: TextStyle(color: Colors.green),
+          // ),
+          
+          appBarTheme: const AppBarTheme(backgroundColor: ColorHelper.primary, titleTextStyle: TextStyle(color: Colors.white,fontSize: 14, fontWeight: FontWeight.bold,),iconTheme: IconThemeData(color: Colors.white),),
+          elevatedButtonTheme:
+              ElevatedButtonThemeData(style: css.buttonRound()),
+          // textButtonTheme: TextButtonThemeData(
+          //     style: TextButton.styleFrom(
+          //         foregroundColor: Color.fromARGB(255, 255, 225, 1),
+          //         disabledForegroundColor:
+          //             const Color.fromARGB(255, 255, 150, 150))),
+          dialogTheme: DialogThemeData(titleTextStyle: css.textHeaderBold()),
+          bottomAppBarTheme:
+              const BottomAppBarThemeData(color: ColorHelper.primary, ),
+          floatingActionButtonTheme: const FloatingActionButtonThemeData(
+              backgroundColor: ColorHelper.primary,)),
+      builder: (context, child) {
+        return child!;
+      },
+      title: 'Login',
+      home: const LoginPage()));
+
+//sugeng add notif new coding for CRM 30.06.2025
+  
   //sugeng end add notif new coding for CRM 30.06.2025
 }
 
@@ -884,7 +885,7 @@ class LayerLogin extends State<LoginPage> {
     bool withIcon = true;
     String packageNamePrefix = '';
     List<AppInfo> apps = await InstalledApps.getInstalledApps(
-        excludeSystemApps: excludeSystemApps, withIcon:withIcon,packageNamePrefix: packageNamePrefix);
+        excludeSystemApps:excludeSystemApps, withIcon:withIcon, packageNamePrefix:packageNamePrefix);
     for (var i = 0; i < apps.length; i++) {
       print(
           '${apps[i].name} | ${apps[i].packageName} | ${apps[i].versionCode} | ${apps[i].versionName}');
@@ -1064,7 +1065,6 @@ class LayerLogin extends State<LoginPage> {
           int.parse(latestPackage.fdVersion.replaceAll('.', ''));
 
       if (iVersion < iLatestVersion) {
-        // if (25041 < iLatestVersion) {
         if (!mounted) return false;
 
         Navigator.pushAndRemoveUntil(
@@ -1361,323 +1361,312 @@ class LayerLogin extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: const Text('PT. Intercallin'),
-        automaticallyImplyLeading: false,
-      ),
-      body: SingleChildScrollView(
-          reverse: true,
-          child: Form(
-              key: formLoginKey,
-              child: Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                  child: Column(
-                    children: [
-                      Image.asset('assets/images/logo250.png',
-                          alignment: Alignment.center),
-                      Text('versi $version'),
-                      const Padding(padding: EdgeInsets.only(bottom: 50)),
-                      TextFormField(
-                        controller: txtUserNameControl,
-                        decoration: css.textInputStyle(
-                            'Username',
-                            null,
-                            null,
-                            Icon(Icons.person_outline,
-                                size: 24 * ScaleSize.textScaleFactor(context)),
-                            null),
-                        // textCapitalization: TextCapitalization.characters,
-                        // keyboardType: TextInputType.number,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please fill Username';
-                          }
+      extendBodyBehindAppBar: true,
+      body:  LoginView(),
+      
+      
+      // SingleChildScrollView(
+      //     reverse: true,
+      //     child: Form(
+      //         key: formLoginKey,
+      //         child: Padding(
+      //             padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+      //             child: Column(
+      //               children: [
+      //                 Image.asset('assets/images/logo250.png',
+      //                     alignment: Alignment.center),
+      //                 Text('versi $version'),
+      //                 const Padding(padding: EdgeInsets.only(bottom: 50)),
+      //                 TextFormField(
+      //                   controller: txtUserNameControl,
+      //                   decoration: css.textInputStyle(
+      //                       'Username',
+      //                       null,
+      //                       null,
+      //                       Icon(Icons.person_outline,
+      //                           size: 24 * ScaleSize.textScaleFactor(context)),
+      //                       null),
+      //                   // textCapitalization: TextCapitalization.characters,
+      //                   // keyboardType: TextInputType.number,
+      //                   validator: (value) {
+      //                     if (value == null || value.isEmpty) {
+      //                       return 'Please fill Username';
+      //                     }
 
-                          return null;
-                        },
-                      ),
-                      const Padding(padding: EdgeInsets.all(5)),
-                      TextFormField(
-                        controller: txtPasswordControl,
-                        obscureText: bObscureText,
-                        autocorrect: false,
-                        decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 10),
-                            fillColor: const Color.fromARGB(255, 243, 255, 241),
-                            filled: true,
-                            hintText: 'Password',
-                            border: css.borderOutlineInputRound(),
-                            suffixIcon: IconButton(
-                                iconSize:
-                                    24 * ScaleSize.textScaleFactor(context),
-                                onPressed: () {
-                                  setState(() {
-                                    bObscureText = !bObscureText;
-                                  });
-                                },
-                                icon: Icon(bObscureText
-                                    ? Icons.visibility
-                                    : Icons.visibility_off_outlined)),
-                            prefixIcon: Icon(Icons.lock_outline,
-                                size: 24 * ScaleSize.textScaleFactor(context))),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please fill Password';
-                          }
+      //                     return null;
+      //                   },
+      //                 ),
+      //                 const Padding(padding: EdgeInsets.all(5)),
+      //                 TextFormField(
+      //                   controller: txtPasswordControl,
+      //                   obscureText: bObscureText,
+      //                   autocorrect: false,
+      //                   decoration: InputDecoration(
+      //                       contentPadding: const EdgeInsets.symmetric(
+      //                           vertical: 10, horizontal: 10),
+      //                       fillColor: const Color.fromARGB(255, 243, 255, 241),
+      //                       filled: true,
+      //                       hintText: 'Password',
+      //                       border: css.borderOutlineInputRound(),
+      //                       suffixIcon: IconButton(
+      //                           iconSize:
+      //                               24 * ScaleSize.textScaleFactor(context),
+      //                           onPressed: () {
+      //                             setState(() {
+      //                               bObscureText = !bObscureText;
+      //                             });
+      //                           },
+      //                           icon: Icon(bObscureText
+      //                               ? Icons.visibility
+      //                               : Icons.visibility_off_outlined)),
+      //                       prefixIcon: Icon(Icons.lock_outline,
+      //                           size: 24 * ScaleSize.textScaleFactor(context))),
+      //                   validator: (value) {
+      //                     if (value == null || value.isEmpty) {
+      //                       return 'Please fill Password';
+      //                     }
 
-                          return null;
-                        },
-                      ),
-                      const Padding(padding: EdgeInsets.all(10)),
-                      (isLoading
-                          ? loadingProgress(ScaleSize.textScaleFactor(context))
-                          : ElevatedButton(
-                              onPressed: () async {
-                                try {
-                                  setState(() {
-                                    isLoading = true;
-                                  });
+      //                     return null;
+      //                   },
+      //                 ),
+      //                 const Padding(padding: EdgeInsets.all(10)),
+      //                 (isLoading
+      //                     ? loadingProgress(ScaleSize.textScaleFactor(context))
+      //                     : ElevatedButton(
+      //                         onPressed: () async {
+      //                           try {
+      //                             setState(() {
+      //                               isLoading = true;
+      //                             });
 
-                                  bool isJailBroken =false;
-                                  bool isDeveloperMode =false;
-                                  // bool isJailBroken =
-                                  //     await FlutterJailbreakDetection
-                                  //         .jailbroken;
-                                  // bool isDeveloperMode =
-                                  //     await FlutterJailbreakDetection
-                                  //         .developerMode;
+      //                             bool isJailBroken = false;
+      //                             bool isDeveloperMode =false;
 
-                                  //Ed1 - 26/09/23 - comment selama develop
-                                  if (true) {
-                                    // if (!isJailBroken && !isDeveloperMode) {
-                                    bool isDateTimeSettingValid = await cother
-                                        .dateTimeSettingValidation();
-                                    
-                                    if (isDateTimeSettingValid) {
-                                      if (formLoginKey.currentState!
-                                          .validate()) {
-                                        bool isDoneUpdate = true;
-                                        //await checkUpdate();
+      //                             //Ed1 - 26/09/23 - comment selama develop
+      //                             if (true) {
+      //                               // if (!isJailBroken && !isDeveloperMode) {
+      //                               bool isDateTimeSettingValid = await cother
+      //                                   .dateTimeSettingValidation();
 
-                                        if (isDoneUpdate) {
-                                          PackageInfo packInfo =
-                                              await PackageInfo.fromPlatform();
-                                             
-                                          fLoginResult = await capi.loginMD(
-                                              txtUserNameControl.text,
-                                              txtPasswordControl.text,
-                                              packInfo.version,
-                                              '_msgToken');
-                                               print(fLoginResult!.fdAkses!);
-                                          if (fLoginResult!.fdAkses!) {
-                                            // Map<String, dynamic> item =
-                                            //     await capi.getKeyDevice(
-                                            //         fLoginResult!.fdKodeSF);
+      //                               if (isDateTimeSettingValid) {
+      //                                 if (formLoginKey.currentState!
+      //                                     .validate()) {
+      //                                   bool isDoneUpdate = true;
+      //                                   //await checkUpdate();
 
-                                            // if (item['data'].isEmpty) {
-                                            AndroidId aid = const AndroidId();
-                                            String? androidid ='idAndroid';
-                                            // String? androidid =
-                                            //     await aid.getId();
-                                            await initMobileNumberState();
-                                            // if (true) {
-                                            print('android:'+androidid.toString());
-                                            print('fdkey :'+fLoginResult!.fdKeyDevice);
-                                            if (androidid ==
-                                                fLoginResult!.fdKeyDevice) {
-                                              // item['fdKeyDevice']) {
-                                              // if (androidInfo.id ==
-                                              //         item['fdKeyDevice'] &&
-                                              //     mobileNumber ==
-                                              //         item['fdSIM']) {
-                                              print(
-                                                  'token: ${fLoginResult!.fdToken.toString()}');
+      //                                   if (isDoneUpdate) {
+      //                                     PackageInfo packInfo =
+      //                                         await PackageInfo.fromPlatform();
+      //                                     fLoginResult = await capi.loginMD(
+      //                                         txtUserNameControl.text,
+      //                                         txtPasswordControl.text,
+      //                                         packInfo.version,
+      //                                         _msgToken!);
+      //                                     if (fLoginResult!.fdAkses!) {
+      //                                       // Map<String, dynamic> item =
+      //                                       //     await capi.getKeyDevice(
+      //                                       //         fLoginResult!.fdKodeSF);
 
-                                              msgChangeUser =
-                                                  await csf.checkIsKodeMdExist(
-                                                      fLoginResult!.fdKodeSF);
-                                              if (msgChangeUser != '') {
-                                                if (!mounted) return;
-                                                alertDialogForm(
-                                                    msgChangeUser, context);
-                                              } else {
-                                                await cdb.initDB2(); //#LOG
-                                                await cdb.initDB(fLoginResult!);
+      //                                       // if (item['data'].isEmpty) {
+      //                                       AndroidId aid = const AndroidId();
+      //                                       String? androidid =
+      //                                           await aid.getId();
+      //                                       await initMobileNumberState();
+      //                                       // if (true) {
+      //                                       print(androidid);
+      //                                       print(fLoginResult!.fdKeyDevice);
+      //                                       if (androidid ==
+      //                                           fLoginResult!.fdKeyDevice) {
+      //                                         // item['fdKeyDevice']) {
+      //                                         // if (androidInfo.id ==
+      //                                         //         item['fdKeyDevice'] &&
+      //                                         //     mobileNumber ==
+      //                                         //         item['fdSIM']) {
+      //                                         print(
+      //                                             'token: ${fLoginResult!.fdToken.toString()}');
 
-                                                await cdb.onUpdateAlter();
+      //                                         msgChangeUser =
+      //                                             await csf.checkIsKodeMdExist(
+      //                                                 fLoginResult!.fdKodeSF);
+      //                                         if (msgChangeUser != '') {
+      //                                           if (!mounted) return;
+      //                                           alertDialogForm(
+      //                                               msgChangeUser, context);
+      //                                         } else {
+      //                                           await cdb.initDB2(); //#LOG
+      //                                           await cdb.initDB(fLoginResult!);
 
-                                                //Go to home page
-                                                if (!mounted) return;
+      //                                           await cdb.onUpdateAlter();
 
-                                                Navigator.pushAndRemoveUntil(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        settings:
-                                                            const RouteSettings(
-                                                                name: 'home'),
-                                                        builder: (context) =>
-                                                            HomePage(
-                                                                user:
-                                                                    fLoginResult!)),
-                                                    (Route<dynamic> route) =>
-                                                        false);
-                                              }
-                                            } else {
-                                              if (!mounted) return;
+      //                                           //Go to home page
+      //                                           if (!mounted) return;
 
-                                              alertDialogForm(
-                                                  'Anda tidak dapat menggunakan device ini',
-                                                  context);
-                                            }
-                                            // } else if (item['data'] == '401') {
-                                            //   await sessionExpired();
-                                            // }
-                                          } else {
-                                            if (!mounted) return;
+      //                                           Navigator.pushAndRemoveUntil(
+      //                                               context,
+      //                                               MaterialPageRoute(
+      //                                                   settings:
+      //                                                       const RouteSettings(
+      //                                                           name: 'home'),
+      //                                                   builder: (context) =>
+      //                                                       HomePage(
+      //                                                           user:
+      //                                                               fLoginResult!)),
+      //                                               (Route<dynamic> route) =>
+      //                                                   false);
+      //                                         }
+      //                                       } else {
+      //                                         if (!mounted) return;
 
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(SnackBar(
-                                                    content: Text(
-                                                        'error: ${fLoginResult!.message}')));
-                                          }
-                                        }
-                                      }
-                                    }
-                                  } else {
-                                    if (!mounted) return;
+      //                                         alertDialogForm(
+      //                                             'Anda tidak dapat menggunakan device ini',
+      //                                             context);
+      //                                       }
+      //                                       // } else if (item['data'] == '401') {
+      //                                       //   await sessionExpired();
+      //                                       // }
+      //                                     } else {
+      //                                       if (!mounted) return;
 
-                                    ScaffoldMessenger.of(context)
-                                      ..removeCurrentSnackBar()
-                                      ..showSnackBar(SnackBar(
-                                          content: Text(
-                                              'Deteksi aplikasi error: J-$isJailBroken, D-$isDeveloperMode')));
-                                  }
+      //                                       ScaffoldMessenger.of(context)
+      //                                           .showSnackBar(SnackBar(
+      //                                               content: Text(
+      //                                                   'error: ${fLoginResult!.message}')));
+      //                                     }
+      //                                   }
+      //                                 }
+      //                               }
+      //                             } else {
+      //                               if (!mounted) return;
 
-                                  setState(() {
-                                    isLoading = false;
-                                  });
-                                } catch (e) {
-                                  if (!mounted) return;
+      //                               ScaffoldMessenger.of(context)
+      //                                 ..removeCurrentSnackBar()
+      //                                 ..showSnackBar(SnackBar(
+      //                                     content: Text(
+      //                                         'Deteksi aplikasi error: J-$isJailBroken, D-$isDeveloperMode')));
+      //                             }
 
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text('error: $e')));
+      //                             setState(() {
+      //                               isLoading = false;
+      //                             });
+      //                           } catch (e) {
+      //                             if (!mounted) return;
 
-                                  setState(() {
-                                    isLoading = false;
-                                  });
-                                }
-                              },
-                              child: const Text('Sign in'),
-                            )),
-                      //Sizebox dengan height "MediaQuery.of(context).viewInsets.bottom" paling bawah untuk
-                      // pancing bagian terbawah widget untuk ketarik / scroll ke atas keyboard
-                      SizedBox(
-                        height: MediaQuery.of(context).viewInsets.bottom,
-                      ),
-                    ],
-                  )))),
+      //                             ScaffoldMessenger.of(context).showSnackBar(
+      //                                 SnackBar(content: Text('error: $e')));
+
+      //                             setState(() {
+      //                               isLoading = false;
+      //                             });
+      //                           }
+      //                         },
+      //                         child: const Text('Sign in'),
+      //                       )),
+      //                 //Sizebox dengan height "MediaQuery.of(context).viewInsets.bottom" paling bawah untuk
+      //                 // pancing bagian terbawah widget untuk ketarik / scroll ke atas keyboard
+      //                 SizedBox(
+      //                   height: MediaQuery.of(context).viewInsets.bottom,
+      //                 ),
+      //               ],
+      //             )))),
       floatingActionButton: (isLoading
           ? const Padding(padding: EdgeInsets.zero)
           : IconButton(
               iconSize: 24 * ScaleSize.textScaleFactor(context),
               visualDensity: VisualDensity.adaptivePlatformDensity,
               onPressed: () {
-                showModalBottomSheet(
-                    shape: css.borderModalRound(),
-                    context: context,
-                    builder: (context) {
-                      return SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.25,
-                        width: MediaQuery.of(context).size.width,
-                        child: Column(
+                FunctionHelper.showDialogs(context, 
+                  title: 'Settings',
+                  content: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: Text('Setting',
-                                    style: css.textNormalBold())),
-                            Expanded(
-                                child: SizedBox(
-                                    width: MediaQuery.of(context).size.width,
-                                    child: TextButton.icon(
-                                        onPressed: () async {
-                                          setState(() {
-                                            isLoading = true;
-                                          });
-
-                                          await checkUpdate();
-
-                                          setState(() {
-                                            isLoading = false;
-                                          });
-                                        },
-                                        icon: Icon(Icons.download_sharp,
-                                            size: 24 *
-                                                ScaleSize.textScaleFactor(
-                                                    context),
-                                            color: Colors.black),
-                                        label: const Text('Update Aplikasi CRM',
-                                            style:
-                                                TextStyle(color: Colors.black)),
-                                        style: const ButtonStyle(
-                                            alignment: Alignment.centerLeft)))),
+                            
+                            SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                child: TextButton.icon(
+                                    onPressed: () async {
+                                      setState(() {
+                                        isLoading = true;
+                                      });
+                            
+                                      await checkUpdate();
+                            
+                                      setState(() {
+                                        isLoading = false;
+                                      });
+                                    },
+                                    icon: Icon(Icons.download_sharp,
+                                        size: 24 *
+                                            ScaleSize.textScaleFactor(
+                                                context),
+                                        color: Colors.black),
+                                    label: const Text('Update Aplikasi CRM',
+                                        style:
+                                            TextStyle(color: Colors.black)),
+                                    style: const ButtonStyle(
+                                        alignment: Alignment.centerLeft))),
                             const Divider(height: 0),
-                            Expanded(
-                                child: SizedBox(
-                                    width: MediaQuery.of(context).size.width,
-                                    child: TextButton.icon(
-                                        onPressed: () {
-                                          yesNoDialogForm('Initial Data');
-                                        },
-                                        icon: Icon(Icons.restart_alt_rounded,
-                                            size: 24 *
-                                                ScaleSize.textScaleFactor(
-                                                    context),
-                                            color: Colors.black),
-                                        label: const Text('Initial Data',
-                                            style:
-                                                TextStyle(color: Colors.black)),
-                                        style: const ButtonStyle(
-                                            alignment: Alignment.centerLeft)))),
+                            SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                child: TextButton.icon(
+                                    onPressed: () {
+                                      yesNoDialogForm('Initial Data');
+                                    },
+                                    icon: Icon(Icons.restart_alt_rounded,
+                                        size: 24 *
+                                            ScaleSize.textScaleFactor(
+                                                context),
+                                        color: Colors.black),
+                                    label: const Text('Initial Data',
+                                        style:
+                                            TextStyle(color: Colors.black)),
+                                    style: const ButtonStyle(
+                                        alignment: Alignment.centerLeft))),
                             const Divider(height: 0),
-                            Expanded(
-                                child: SizedBox(
-                                    width: MediaQuery.of(context).size.width,
-                                    child: TextButton.icon(
-                                        onPressed: () async {
-                                          try {
-                                            AndroidId aid = const AndroidId();
-                                            String? androidid =
-                                                await aid.getId();
-
-                                            generateKeyDialogForm(
-                                                'Generate Key',
-                                                androidid!); //androidInfo.id);
-                                          } catch (e) {
-                                            if (!mounted) return;
-
-                                            ScaffoldMessenger.of(context)
-                                              ..removeCurrentSnackBar()
-                                              ..showSnackBar(SnackBar(
-                                                  content: Text('error: $e')));
-                                          }
-                                        },
-                                        icon: Icon(Icons.generating_tokens,
-                                            size: 24 *
-                                                ScaleSize.textScaleFactor(
-                                                    context),
-                                            color: Colors.black),
-                                        label: const Text('Generate Key',
-                                            style:
-                                                TextStyle(color: Colors.black)),
-                                        style: const ButtonStyle(
-                                            alignment: Alignment.centerLeft))))
+                            SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                child: TextButton.icon(
+                                    onPressed: () async {
+                                      try {
+                                        AndroidId aid = const AndroidId();
+                                        String? androidid =
+                                            await aid.getId();
+                                        
+                                        generateKeyDialogForm(
+                                            'Generate Key',
+                                            androidid!); //androidInfo.id);
+                                      } catch (e) {
+                                        if (!mounted) return;
+                            
+                                        ScaffoldMessenger.of(context)
+                                          ..removeCurrentSnackBar()
+                                          ..showSnackBar(SnackBar(
+                                              content: Text('error: $e')));
+                                      }
+                                    },
+                                    icon: Icon(Icons.generating_tokens,
+                                        size: 24 *
+                                            ScaleSize.textScaleFactor(
+                                                context),
+                                        color: Colors.black),
+                                    label: const Text('Generate Key',
+                                        style:
+                                            TextStyle(color: Colors.black)),
+                                    style: const ButtonStyle(
+                                        alignment: Alignment.centerLeft)))
                           ],
-                        ),
-                      );
-                    });
+                        )
+                );
+                // showModalBottomSheet(
+                //     shape: css.borderModalRound(),
+                //     context: context,
+                //     builder: (context) {
+                //       return SizedBox(
+                //         height: MediaQuery.of(context).size.height * 0.25,
+                //         width: MediaQuery.of(context).size.width,
+                //         child: ,
+                //       );
+                //     });
               },
               icon: const Icon(Icons.settings, color: Colors.black),
             )),

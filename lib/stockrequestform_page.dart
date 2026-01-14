@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:crm_apps/new/component/custom_button_component.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as cpath;
@@ -645,367 +646,306 @@ class LayerStockRequestFormPage extends State<StockRequestFormPage> {
                     ],
                   ),
                   if (listBarangSelected.isNotEmpty)
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: listBarangSelected.length,
-                        itemBuilder: (context, index) {
-                          final barang = listBarangSelected[index];
-                          return barang.fdPromosi == '1'
-                              ? const Padding(padding: EdgeInsets.all(0))
-                              : Padding(
-                                  padding: const EdgeInsets.all(5),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        flex: 3,
-                                        child: Text(barang.fdNamaBarang.trim()),
-                                      ),
-                                      Expanded(
-                                        flex: 2,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(4),
-                                          child: TextFormField(
-                                            controller: textQtyControllers[
-                                                    barang.fdKodeBarang
-                                                        .trim()] ??=
-                                                TextEditingController(),
-                                            keyboardType: TextInputType.number,
-                                            inputFormatters: [
-                                              FilteringTextInputFormatter.allow(
-                                                  RegExp(r'^\d*\.?\d*')),
-                                              cother
-                                                  .EnThousandsSeparatorInputFormatter(),
-                                            ],
-                                            decoration: css.textInputStyle(
-                                              'Qty',
-                                              const TextStyle(
-                                                  fontStyle: FontStyle.italic),
-                                              'Qty',
-                                              null,
-                                              null,
-                                            ),
-                                            onChanged: (value) {
-                                              setState(() {
-                                                print(textQtyControllers[barang
-                                                        .fdKodeBarang
-                                                        .trim()]
-                                                    ?.text);
-                                                totalItem = textQtyControllers
-                                                    .values
-                                                    .map((controller) =>
-                                                        double.tryParse(
-                                                            controller.text
-                                                                .replaceAll(
-                                                                    RegExp(
-                                                                        r'[,]'),
-                                                                    '')) ??
-                                                        0.0)
-                                                    .fold(
-                                                        0.0,
-                                                        (prev, element) =>
-                                                            prev + element);
-                                                qty = double.tryParse(
-                                                    textQtyControllers[barang
-                                                                .fdKodeBarang
-                                                                .trim()]
-                                                            ?.text
-                                                            .replaceAll(
-                                                                RegExp(r'[,]'),
-                                                                '') ??
-                                                        '0.0');
-                                                print('totalItem: $totalItem');
-                                                print('qty: $qty');
-                                                barang.fdQty = qty;
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 2,
-                                        child: DropdownSearch<mbrg.Satuan>(
-                                          itemAsString: (mbrg.Satuan item) =>
-                                              item.fdNamaSatuan!,
-                                          compareFn: (mbrg.Satuan item,
-                                                  mbrg.Satuan selectedItem) =>
-                                              item.fdKodeSatuan ==
-                                              selectedItem.fdKodeSatuan,
-                                          items: (String filter, LoadProps? loadProps) =>satuanPerBarang[
-                                                  barang.fdKodeBarang] ??
-                                              [],
-                                          selectedItem: (satuanPerBarang[
-                                                      barang.fdKodeBarang] ??
-                                                  [])
-                                              .firstWhere(
-                                            (item) =>
-                                                item.fdKodeSatuan.trim() ==
-                                                satuanSelectedPerBarang[
-                                                    barang.fdKodeBarang],
-                                            orElse: () => mbrg.Satuan(
-                                                fdKodeSatuan: '',
-                                                fdNamaSatuan: ''),
-                                          ),
-                                          popupProps: PopupProps.menu(
-                                            showSearchBox: false,
-                                            searchFieldProps: TextFieldProps(
-                                              decoration: css.textInputStyle(
-                                                'Search',
-                                                const TextStyle(
-                                                    fontStyle:
-                                                        FontStyle.italic),
-                                                null,
-                                                Icon(Icons.search,
-                                                    size: 24 *
-                                                        ScaleSize
-                                                            .textScaleFactor(
-                                                                context)),
-                                                null,
-                                              ),
-                                            ),
-                                            searchDelay:
-                                                const Duration(milliseconds: 0),
-                                            itemBuilder:
-                                                (context, item, isSelected,val) {
-                                              return ListTile(
-                                                title: Text(
-                                                  item.fdNamaSatuan!.trim(),
-                                                  style:
-                                                      css.textSmallSizeBlack(),
-                                                ),
-                                              );
-                                            },
-                                            menuProps: MenuProps(
-                                                shape: css
-                                                    .borderOutlineInputRound()),
-                                            constraints: const BoxConstraints(
-                                                maxHeight: 210),
-                                          ),
-                                          decoratorProps:
-                                              DropDownDecoratorProps(
-                                            decoration:
-                                                css.textInputStyle(
-                                              'Satuan',
-                                              const TextStyle(
-                                                  fontStyle: FontStyle.italic),
-                                              'Satuan',
-                                              null,
-                                              null,
-                                            ),
-                                          ),
-                                          dropdownBuilder:
-                                              (context, selectedItem) {
-                                            return Text(
-                                              selectedItem?.fdNamaSatuan ?? '',
-                                              style: css.textSmallSizeBlack(),
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 1,
-                                            );
-                                          },
-                                          onChanged:
-                                              (mbrg.Satuan? value) async {
-                                            double unitPrice = 0;
-                                            double unitPriceK = 0;
-                                            unitPrice = 0;
-                                            unitPriceK = 0;
-                                            konversiSatuanBarang = await cbrg
-                                                .getKonversiSatuanBarang(
-                                                    barang.fdKodeBarang.trim());
-                                            setState(() {
-                                              listBarangSelected[index]
-                                                  .fdUnitPrice = unitPrice;
-                                              listBarangSelected[index]
-                                                  .fdUnitPriceK = unitPriceK;
-                                              listBarangSelected[index]
-                                                      .fdKonvB_S =
-                                                  konversiSatuanBarang[0]
-                                                      ['fdKonvB_S'];
-                                              listBarangSelected[index]
-                                                      .fdKonvS_K =
-                                                  konversiSatuanBarang[0]
-                                                      ['fdKonvS_K'];
-                                              satuanSelectedPerBarang[
-                                                      barang.fdKodeBarang] =
-                                                  value?.fdKodeSatuan.trim();
-                                              barang.fdJenisSatuan =
-                                                  int.tryParse(
-                                                          value?.fdKodeSatuan ??
-                                                              '9') ??
-                                                      9;
-                                              listBarangSelected[index]
-                                                      .fdNamaJenisSatuan =
-                                                  value?.fdNamaSatuan;
-                                              listBarangSelected[index]
-                                                  .isHanger = barang.isHanger;
-                                            });
-                                            // log('listBarangSelected: ${listBarangSelected.map((item) => '(${item.fdKodeBarang},  Qty: ${item.fdQty}, Satuan: ${item.fdJenisSatuan}  ${item.fdNamaJenisSatuan}  ${item.fdKonvB_S}  ${item.fdKonvS_K})').toList()}');
-                                          },
-                                          filterFn: (mbrg.Satuan item,
-                                              String filter) {
-                                            return item.fdNamaSatuan!
-                                                    .toLowerCase()
-                                                    .contains(
-                                                        filter.toLowerCase()) ||
-                                                item.fdKodeSatuan
-                                                    .toLowerCase()
-                                                    .contains(
-                                                        filter.toLowerCase());
-                                          },
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(1),
-                                          child: SizedBox(
-                                            width: 40,
-                                            height: 40,
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                setState(() {
-                                                  listBarangSelected
-                                                      .removeAt(index);
-                                                  textQtyControllers[barang
-                                                          .fdKodeBarang
-                                                          .trim()]
-                                                      ?.text = '';
-                                                  totalItem = textQtyControllers
-                                                      .values
-                                                      .map((controller) =>
-                                                          int.tryParse(controller
-                                                              .text
-                                                              .replaceAll(
-                                                                  RegExp(
-                                                                      r'[.,]'),
-                                                                  '')) ??
-                                                          0)
-                                                      .fold(
-                                                          0,
-                                                          (prev, element) =>
-                                                              prev + element);
-                                                });
-                                              },
-                                              child: Ink(
-                                                  decoration:
-                                                      const ShapeDecoration(
-                                                    color: Colors.red,
-                                                    shape: CircleBorder(),
-                                                  ),
-                                                  child: const Icon(
-                                                    Icons.remove,
-                                                    color: Colors.white,
-                                                  )),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                        },
-                      ),
-                    ),
+  Expanded(
+    child: ListView.builder(
+      itemCount: listBarangSelected.length,
+      itemBuilder: (context, index) {
+        final barang = listBarangSelected[index];
+
+        // Jika promosi, jangan tampilkan apa-apa (lebih efisien pakai shrink)
+        if (barang.fdPromosi == '1') return const SizedBox.shrink();
+        
+        return SelectedBarangItem(
+          index: index,
+          barang: barang,
+          textQtyControllers: textQtyControllers, // Kirim variabelnya di sini
+          satuanPerBarang: satuanPerBarang,
+          satuanSelectedPerBarang: satuanSelectedPerBarang,
+          onChanged: _updateTotalItems,
+          onRemove: () {
+            setState(() {
+              listBarangSelected.removeAt(index);
+              textQtyControllers[barang.fdKodeBarang.trim()]?.text = '';
+              _updateTotalItems();
+            });
+          },
+        );
+      },
+    ),
+  ),
                 ],
               ),
             )),
           ])),
       bottomNavigationBar: isLoading
           ? Center(child: loadingProgress(ScaleSize.textScaleFactor(context)))
-          : BottomAppBar(
-              height: 40 * ScaleSize.textScaleFactor(context),
-              child: TextButton(
-                onPressed: () async {
-                  if (formInputKey.currentState!.validate()) {
-                    totalStockRequest = 0;
-                    checkSave = await saveStockRequest();
-                    if (isDecimal == 0) {
-                      // listKeranjang.sort(
-                      //     (a, b) => a.fdKodeBarang.compareTo(b.fdKodeBarang));
-                      listKeranjang.sort((a, b) {
-                        final kodeCompare =
-                            a.fdKodeBarang.compareTo(b.fdKodeBarang);
-                        if (kodeCompare != 0) {
-                          return kodeCompare;
-                        } else {
-                          return a.fdPromosi!.compareTo(b.fdPromosi!);
-                        }
-                      });
-
-                      log('new listKeranjang: ${listKeranjang.map((item) => '(${item.fdKodeBarang}, ${item.fdNamaBarang}, Qty: ${item.fdQty}, Satuan: ${item.fdJenisSatuan}, promosi: ${item.fdPromosi})').toList()}');
-
-                      log('data: ${JsonBarangDiskon.map((item) => '(${item.fdDiscount} )').toList()}');
-                      // if (JsonBarangDiskon.isEmpty) {
-                      //   totalDiscount = 0;
-                      // } else if (JsonBarangDiskon[0].message!.isNotEmpty) {
-                      //   totalDiscount = 0;
-                      //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      //     content: Text(
-                      //       JsonBarangDiskon[0].message.toString(),
-                      //     ),
-                      //   ));
-                      // } else {
-                      //   totalDiscount =
-                      //       JsonBarangDiskon.map((item) => item.fdDiscount)
-                      //           .reduce((a, b) => a + b);
-                      //   // Isi fdDiscountDetail pada listKeranjang dari JsonBarangDiskon
-                      //   for (var keranjang in listKeranjang) {
-                      //     final diskon = JsonBarangDiskon.firstWhere(
-                      //       (d) => d.fdKodeBarang == keranjang.fdKodeBarang,
-                      //       orElse: () => mbrg.JsonBarangDiskon(
-                      //         fdKodeBarang: keranjang.fdKodeBarang,
-                      //         fdDiscount: keranjang.fdDiscount ?? 0,
-                      //         fdDiscountDetail: '',
-                      //         fdQty: keranjang.fdQty ?? 0,
-                      //         fdLastUpdate: DateTime.now().toIso8601String(),
-                      //       ),
-                      //     );
-                      //     keranjang.fdDiscountDetail = diskon.fdDiscountDetail;
-                      //     keranjang.fdDiscount = diskon.fdDiscount;
-                      //   }
-                      // }
-                      // print(totalDiscount);
-                      log('data: ${listKeranjang.map((item) => '(${item.fdKodeBarang}, ${item.fdNamaBarang}, promosi:${item.fdPromosi}, Qty: ${item.fdQty}, Satuan: ${item.fdJenisSatuan} ${item.fdNamaJenisSatuan} ${item.fdDiscount} ${item.fdDiscountDetail})').toList()}');
-
-//hitung total StockRequest
-
-                      // for (int index = 0;
-                      //     index < listKeranjang.length;
-                      //     index++) {
-                      //   totalStockRequest += listKeranjang[index].fdTotalPrice!;
-                      //   totalDiscount += 0;
-                      // }
-
-                      if (checkSave) {
-                        Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    settings: const RouteSettings(
-                                        name: 'StockRequestSummaryForm'),
-                                    builder: (context) => StockSummaryForm(
-                                        fdNoEntryStock:
-                                            widget.fdNoEntryStockRequest,
-                                        user: widget.user,
-                                        totalStockRequest: totalStockRequest,
-                                        totalDiscount: totalDiscount,
-                                        listKeranjang: listKeranjang,
-                                        isEndDay: widget.isEndDay,
-                                        routeName: 'StockRequestCartForm',
-                                        startDayDate: widget.startDayDate)))
-                            .then((value) {
-                          initLoadPage();
-
-                          setState(() {});
-                          print(listKeranjang);
-                          log('data listBarangSelected back : ${listBarangSelected.map((item) => '(${item.fdKodeBarang}, ${item.fdNamaBarang}, Qty: ${item.fdQty}, Satuan: ${item.fdJenisSatuan})').toList()}');
-                          log('data back: ${listKeranjang.map((item) => '(${item.fdKodeBarang}, ${item.fdNamaBarang}, Qty: ${item.fdQty}, Satuan: ${item.fdJenisSatuan})').toList()}');
+          : Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: CustomButtonComponent(
+              title: 'Next',
+              onPressed: ()async{
+                if (formInputKey.currentState!.validate()) {
+                      totalStockRequest = 0;
+                      checkSave = await saveStockRequest();
+                      if (isDecimal == 0) {
+                        // listKeranjang.sort(
+                        //     (a, b) => a.fdKodeBarang.compareTo(b.fdKodeBarang));
+                        listKeranjang.sort((a, b) {
+                          final kodeCompare =
+                              a.fdKodeBarang.compareTo(b.fdKodeBarang);
+                          if (kodeCompare != 0) {
+                            return kodeCompare;
+                          } else {
+                            return a.fdPromosi!.compareTo(b.fdPromosi!);
+                          }
                         });
+            
+                        log('new listKeranjang: ${listKeranjang.map((item) => '(${item.fdKodeBarang}, ${item.fdNamaBarang}, Qty: ${item.fdQty}, Satuan: ${item.fdJenisSatuan}, promosi: ${item.fdPromosi})').toList()}');
+            
+                        log('data: ${JsonBarangDiskon.map((item) => '(${item.fdDiscount} )').toList()}');
+                        // if (JsonBarangDiskon.isEmpty) {
+                        //   totalDiscount = 0;
+                        // } else if (JsonBarangDiskon[0].message!.isNotEmpty) {
+                        //   totalDiscount = 0;
+                        //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        //     content: Text(
+                        //       JsonBarangDiskon[0].message.toString(),
+                        //     ),
+                        //   ));
+                        // } else {
+                        //   totalDiscount =
+                        //       JsonBarangDiskon.map((item) => item.fdDiscount)
+                        //           .reduce((a, b) => a + b);
+                        //   // Isi fdDiscountDetail pada listKeranjang dari JsonBarangDiskon
+                        //   for (var keranjang in listKeranjang) {
+                        //     final diskon = JsonBarangDiskon.firstWhere(
+                        //       (d) => d.fdKodeBarang == keranjang.fdKodeBarang,
+                        //       orElse: () => mbrg.JsonBarangDiskon(
+                        //         fdKodeBarang: keranjang.fdKodeBarang,
+                        //         fdDiscount: keranjang.fdDiscount ?? 0,
+                        //         fdDiscountDetail: '',
+                        //         fdQty: keranjang.fdQty ?? 0,
+                        //         fdLastUpdate: DateTime.now().toIso8601String(),
+                        //       ),
+                        //     );
+                        //     keranjang.fdDiscountDetail = diskon.fdDiscountDetail;
+                        //     keranjang.fdDiscount = diskon.fdDiscount;
+                        //   }
+                        // }
+                        // print(totalDiscount);
+                        log('data: ${listKeranjang.map((item) => '(${item.fdKodeBarang}, ${item.fdNamaBarang}, promosi:${item.fdPromosi}, Qty: ${item.fdQty}, Satuan: ${item.fdJenisSatuan} ${item.fdNamaJenisSatuan} ${item.fdDiscount} ${item.fdDiscountDetail})').toList()}');
+            
+            //hitung total StockRequest
+            
+                        // for (int index = 0;
+                        //     index < listKeranjang.length;
+                        //     index++) {
+                        //   totalStockRequest += listKeranjang[index].fdTotalPrice!;
+                        //   totalDiscount += 0;
+                        // }
+            
+                        if (checkSave) {
+                          Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      settings: const RouteSettings(
+                                          name: 'StockRequestSummaryForm'),
+                                      builder: (context) => StockSummaryForm(
+                                          fdNoEntryStock:
+                                              widget.fdNoEntryStockRequest,
+                                          user: widget.user,
+                                          totalStockRequest: totalStockRequest,
+                                          totalDiscount: totalDiscount,
+                                          listKeranjang: listKeranjang,
+                                          isEndDay: widget.isEndDay,
+                                          routeName: 'StockRequestCartForm',
+                                          startDayDate: widget.startDayDate)))
+                              .then((value) {
+                            initLoadPage();
+            
+                            setState(() {});
+                            print(listKeranjang);
+                            log('data listBarangSelected back : ${listBarangSelected.map((item) => '(${item.fdKodeBarang}, ${item.fdNamaBarang}, Qty: ${item.fdQty}, Satuan: ${item.fdJenisSatuan})').toList()}');
+                            log('data back: ${listKeranjang.map((item) => '(${item.fdKodeBarang}, ${item.fdNamaBarang}, Qty: ${item.fdQty}, Satuan: ${item.fdJenisSatuan})').toList()}');
+                          });
+                        }
                       }
                     }
-                  }
-                },
-                child: const Text('Next'),
-                // Text('Keranjang: ${param.enNumberFormat.format(totalItem).toString()} items'),
+              },
+            ),
+          )
+    );
+  }
+  void _updateTotalItems() {
+    setState(() {
+      totalItem = textQtyControllers.values.fold(0.0, (prev, controller) {
+        final value = controller.text.replaceAll(',', '');
+        return prev + (double.tryParse(value) ?? 0.0);
+      });
+    });
+  }
+  
+}
+class SelectedBarangItem extends StatelessWidget {
+  final int index;
+  final dynamic barang;
+  final Map<String, TextEditingController> textQtyControllers;
+  final Map<String, List<mbrg.Satuan>> satuanPerBarang;
+  final Map<String, String?> satuanSelectedPerBarang;
+  final VoidCallback onChanged;
+  final VoidCallback onRemove;
+
+  const SelectedBarangItem({
+    super.key,
+    required this.index,
+    required this.barang,
+    required this.textQtyControllers,
+    required this.satuanPerBarang,
+    required this.satuanSelectedPerBarang,
+    required this.onChanged,
+    required this.onRemove,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final String kodeBarang = barang.fdKodeBarang.trim();
+    
+    return Container(
+      margin: EdgeInsets.only(top: 10,),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // HEADER: Nama Barang & Tombol Hapus
+          Container(
+            padding: const EdgeInsets.only(left: 12, top: 4, bottom: 4, right: 4),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade50,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(12),
+                topRight: Radius.circular(12),
               ),
             ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    barang.fdNamaBarang.trim(),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      color: Colors.blueGrey,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  visualDensity: VisualDensity.compact,
+                  onPressed: onRemove,
+                  icon: const Icon(Icons.cancel, color: Colors.redAccent, size: 22),
+                ),
+              ],
+            ),
+          ),
+
+          // BODY: Input Qty & Dropdown Satuan
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              children: [
+                // Input Qty
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text("Jumlah", style: TextStyle(fontSize: 11, color: Colors.grey)),
+                      const SizedBox(height: 4),
+                      TextFormField(
+                        controller: textQtyControllers[kodeBarang] ??= TextEditingController(),
+                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+                          cother.EnThousandsSeparatorInputFormatter(),
+                        ],
+                        decoration: InputDecoration(
+                          isDense: true,
+                          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                          fillColor: Colors.white,
+                          filled: true,
+                        ),
+                        onChanged: (value) {
+                          final cleanValue = value.replaceAll(',', '');
+                          barang.fdQty = double.tryParse(cleanValue) ?? 0.0;
+                          onChanged();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                
+                const SizedBox(width: 12),
+
+                // Dropdown Satuan
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text("Satuan", style: TextStyle(fontSize: 11, color: Colors.grey)),
+                      const SizedBox(height: 4),
+                      DropdownSearch<mbrg.Satuan>(
+                        items: (filter, props) => satuanPerBarang[kodeBarang] ?? [],
+                        itemAsString: (item) => item.fdNamaSatuan!,
+                        compareFn: (i, s) => i.fdKodeSatuan == s.fdKodeSatuan,
+                        selectedItem: (satuanPerBarang[kodeBarang] ?? []).firstWhere(
+                          (item) => item.fdKodeSatuan.trim() == satuanSelectedPerBarang[kodeBarang],
+                          orElse: () => mbrg.Satuan(fdKodeSatuan: '', fdNamaSatuan: ''),
+                        ),
+                        onChanged: (value) async {
+                          if (value == null) return;
+                          var konv = await cbrg.getKonversiSatuanBarang(kodeBarang);
+                          barang.fdKonvB_S = konv[0]['fdKonvB_S'];
+                          barang.fdKonvS_K = konv[0]['fdKonvS_K'];
+                          satuanSelectedPerBarang[kodeBarang] = value.fdKodeSatuan.trim();
+                          barang.fdJenisSatuan = int.tryParse(value.fdKodeSatuan) ?? 9;
+                          barang.fdNamaJenisSatuan = value.fdNamaSatuan;
+                          onChanged();
+                        },
+                        decoratorProps: DropDownDecoratorProps(
+                          decoration: InputDecoration(
+                            isDense: true,
+                            contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                          ),
+                        ),
+                        dropdownBuilder: (context, selectedItem) => Text(
+                          selectedItem?.fdNamaSatuan ?? '',
+                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

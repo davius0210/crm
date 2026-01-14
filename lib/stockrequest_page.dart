@@ -800,6 +800,7 @@ class LayerStockRequest extends State<StockRequestPage> {
                         });
                       },
                       child: Icon(Icons.add,
+                      color: Colors.white,
                           size: 24 * ScaleSize.textScaleFactor(context)),
                     )
                   : const Text(''),

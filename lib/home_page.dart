@@ -1,5 +1,10 @@
 import 'dart:io';
 import 'package:crm_apps/listinvoice_page.dart';
+import 'package:crm_apps/new/component/custom_button_component.dart';
+import 'package:crm_apps/new/helper/color_helper.dart';
+import 'package:crm_apps/new/helper/function_helper.dart';
+import 'package:crm_apps/new/page/home/controller/home_controller.dart';
+import 'package:crm_apps/new/page/home/view/home_view.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -7,6 +12,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:crm_apps/coveragearea_page.dart';
 import 'package:crm_apps/limitkredit_page.dart';
+import 'package:get/get.dart';
 import 'backup_page.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -49,6 +55,7 @@ class HomePage extends StatefulWidget {
 }
 
 class LayerHome extends State<HomePage> {
+  HomeController cHome = Get.put(HomeController());
   bool isLoading = false;
   String startDayActivity = '01';
   String endDayActivity = '05';
@@ -1121,428 +1128,424 @@ class LayerHome extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: (isLoading
-            ? const Padding(padding: EdgeInsets.zero)
-            : SizedBox(
-                width: MediaQuery.of(context).size.width * 0.8,
-                child: Drawer(
-                  shape: const RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.only(topRight: Radius.circular(30)),
-                  ),
-                  child: ListView(
-                    padding: EdgeInsets.zero,
-                    children: [
-                      DrawerHeader(
-                          margin: EdgeInsets.zero,
-                          padding: EdgeInsets.zero,
-                          decoration: css.boxDecorDrawerHeader(),
-                          child: Row(
-                            children: [
-                              Image.asset('assets/images/UserProfile.png'),
-                              Flexible(
-                                  child: Text(
-                                '${widget.user.fdKodeDepo} - ${widget.user.fdNamaDepo}\n\n${widget.user.fdKodeSF}\n${widget.user.fdNamaSF}',
-                              )),
-                            ],
-                          )), //
+        // drawer: (isLoading
+        //     ? const Padding(padding: EdgeInsets.zero)
+        //     : SizedBox(
+        //         width: MediaQuery.of(context).size.width * 0.8,
+        //         child: Drawer(
+        //           shape: const RoundedRectangleBorder(
+        //             borderRadius:
+        //                 BorderRadius.only(topRight: Radius.circular(30)),
+        //           ),
+        //           child: ListView(
+        //             padding: EdgeInsets.zero,
+        //             children: [
+                      
+        //               DrawerHeader(
+        //                   margin: EdgeInsets.zero,
+        //                   padding: EdgeInsets.all(10),
+        //                   decoration: css.boxDecorDrawerHeader(),
+        //                   child: Row(
+        //                     children: [
+        //                       CircleAvatar(
+        //                         backgroundColor: Colors.white,
+        //                         child: Image.asset('assets/images/UserProfile.png'),radius: 50,),
+        //                       SizedBox(width: 10,),
+        //                       Flexible(
+        //                           child: Text(
+        //                         '${widget.user.fdKodeDepo} - ${widget.user.fdNamaDepo}\n${widget.user.fdKodeSF}\n${widget.user.fdNamaSF}',
+        //                         style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        //                       )),
+        //                     ],
+        //                   )), //
 
-                      // === Master Dropdown ===
+        //               // === Master Dropdown ===
 
-                      ExpansionTile(
-                        leading: Icon(Icons.folder,
-                            color: Colors.blue,
-                            size: 24 * ScaleSize.textScaleFactor(context)),
-                        title: const Text('Sales Activity'),
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: ListTile(
-                              title: const Text('Stock'),
-                              leading: Icon(Icons.download_rounded,
-                                  color: Colors.blue,
-                                  size:
-                                      24 * ScaleSize.textScaleFactor(context)),
-                              onTap: () {
-                                Navigator.pop(context);
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        settings:
-                                            const RouteSettings(name: 'stock'),
-                                        builder: (context) => StockPage(
-                                            user: widget.user,
-                                            startDayDate: startDayDate,
-                                            isEndDay: isEndDay,
-                                            routeName: 'stock')));
-                              },
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: ListTile(
-                              title: const Text('Rencana Rute'),
-                              leading: Icon(Icons.route_outlined,
-                                  color: Colors.blue,
-                                  size:
-                                      24 * ScaleSize.textScaleFactor(context)),
-                              onTap: () {
-                                Navigator.pop(context);
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        settings: const RouteSettings(
-                                            name: 'rencanarute'),
-                                        builder: (context) => RencanaRutePage(
-                                            user: widget.user,
-                                            startDayDate: startDayDate,
-                                            isEndDay: isEndDay,
-                                            routeName: 'rencanarute')));
-                              },
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: ListTile(
-                              title: const Text('List Invoice'),
-                              leading: Icon(Icons.list_alt_rounded,
-                                  color: Colors.blue,
-                                  size:
-                                      24 * ScaleSize.textScaleFactor(context)),
-                              onTap: () {
-                                Navigator.pop(context);
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        settings: const RouteSettings(
-                                            name: 'listinvoice'),
-                                        builder: (context) => ListInvoicePage(
-                                            user: widget.user,
-                                            startDayDate: startDayDate,
-                                            isEndDay: isEndDay,
-                                            routeName: 'listinvoice')));
-                              },
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: ListTile(
-                              title: const Text('Coverage Area'),
-                              leading: Icon(Icons.place_rounded,
-                                  color: Colors.blue,
-                                  size:
-                                      24 * ScaleSize.textScaleFactor(context)),
-                              onTap: () {
-                                Navigator.pop(context);
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        settings: const RouteSettings(
-                                            name: 'coveragearea'),
-                                        builder: (context) => CoverageAreaPage(
-                                            user: widget.user,
-                                            startDayDate: startDayDate,
-                                            routeName: 'coveragearea')));
-                              },
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: ListTile(
-                              title: const Text('Limit Kredit'),
-                              leading: Icon(Icons.credit_card,
-                                  color: Colors.blue,
-                                  size:
-                                      24 * ScaleSize.textScaleFactor(context)),
-                              onTap: () {
-                                Navigator.pop(context);
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        settings: const RouteSettings(
-                                            name: 'limitkredit'),
-                                        builder: (context) => LimitKreditPage(
-                                            user: widget.user,
-                                            startDayDate: startDayDate,
-                                            isEndDay: isEndDay,
-                                            routeName: 'limitkredit')));
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
+        //               ExpansionTile(
+        //                 leading: Icon(Icons.folder,
+        //                     color: Colors.blue,
+        //                     size: 24 * ScaleSize.textScaleFactor(context)),
+        //                 title: const Text('Sales Activity'),
+        //                 children: [
+        //                   Padding(
+        //                     padding: const EdgeInsets.only(left: 10),
+        //                     child: ListTile(
+        //                       title: const Text('Stock'),
+        //                       leading: Icon(Icons.download_rounded,
+        //                           color: Colors.blue,
+        //                           size:
+        //                               24 * ScaleSize.textScaleFactor(context)),
+        //                       onTap: () {
+        //                         Navigator.pop(context);
+        //                         Navigator.push(
+        //                             context,
+        //                             MaterialPageRoute(
+        //                                 settings:
+        //                                     const RouteSettings(name: 'stock'),
+        //                                 builder: (context) => StockPage(
+        //                                     user: widget.user,
+        //                                     startDayDate: startDayDate,
+        //                                     isEndDay: isEndDay,
+        //                                     routeName: 'stock')));
+        //                       },
+        //                     ),
+        //                   ),
+        //                   Padding(
+        //                     padding: const EdgeInsets.only(left: 10),
+        //                     child: ListTile(
+        //                       title: const Text('Rencana Rute'),
+        //                       leading: Icon(Icons.route_outlined,
+        //                           color: Colors.blue,
+        //                           size:
+        //                               24 * ScaleSize.textScaleFactor(context)),
+        //                       onTap: () {
+        //                         Navigator.pop(context);
+        //                         Navigator.push(
+        //                             context,
+        //                             MaterialPageRoute(
+        //                                 settings: const RouteSettings(
+        //                                     name: 'rencanarute'),
+        //                                 builder: (context) => RencanaRutePage(
+        //                                     user: widget.user,
+        //                                     startDayDate: startDayDate,
+        //                                     isEndDay: isEndDay,
+        //                                     routeName: 'rencanarute')));
+        //                       },
+        //                     ),
+        //                   ),
+        //                   Padding(
+        //                     padding: const EdgeInsets.only(left: 10),
+        //                     child: ListTile(
+        //                       title: const Text('List Invoice'),
+        //                       leading: Icon(Icons.list_alt_rounded,
+        //                           color: Colors.blue,
+        //                           size:
+        //                               24 * ScaleSize.textScaleFactor(context)),
+        //                       onTap: () {
+        //                         Navigator.pop(context);
+        //                         Navigator.push(
+        //                             context,
+        //                             MaterialPageRoute(
+        //                                 settings: const RouteSettings(
+        //                                     name: 'listinvoice'),
+        //                                 builder: (context) => ListInvoicePage(
+        //                                     user: widget.user,
+        //                                     startDayDate: startDayDate,
+        //                                     isEndDay: isEndDay,
+        //                                     routeName: 'listinvoice')));
+        //                       },
+        //                     ),
+        //                   ),
+        //                   Padding(
+        //                     padding: const EdgeInsets.only(left: 10),
+        //                     child: ListTile(
+        //                       title: const Text('Coverage Area'),
+        //                       leading: Icon(Icons.place_rounded,
+        //                           color: Colors.blue,
+        //                           size:
+        //                               24 * ScaleSize.textScaleFactor(context)),
+        //                       onTap: () {
+        //                         Navigator.pop(context);
+        //                         Navigator.push(
+        //                             context,
+        //                             MaterialPageRoute(
+        //                                 settings: const RouteSettings(
+        //                                     name: 'coveragearea'),
+        //                                 builder: (context) => CoverageAreaPage(
+        //                                     user: widget.user,
+        //                                     startDayDate: startDayDate,
+        //                                     routeName: 'coveragearea')));
+        //                       },
+        //                     ),
+        //                   ),
+        //                   Padding(
+        //                     padding: const EdgeInsets.only(left: 10),
+        //                     child: ListTile(
+        //                       title: const Text('Limit Kredit'),
+        //                       leading: Icon(Icons.credit_card,
+        //                           color: Colors.blue,
+        //                           size:
+        //                               24 * ScaleSize.textScaleFactor(context)),
+        //                       onTap: () {
+        //                         Navigator.pop(context);
+        //                         Navigator.push(
+        //                             context,
+        //                             MaterialPageRoute(
+        //                                 settings: const RouteSettings(
+        //                                     name: 'limitkredit'),
+        //                                 builder: (context) => LimitKreditPage(
+        //                                     user: widget.user,
+        //                                     startDayDate: startDayDate,
+        //                                     isEndDay: isEndDay,
+        //                                     routeName: 'limitkredit')));
+        //                       },
+        //                     ),
+        //                   ),
+        //                 ],
+        //               ),
 
-                      ExpansionTile(
-                        leading: Icon(Icons.list_alt_rounded,
-                            color: Colors.blue,
-                            size: 24 * ScaleSize.textScaleFactor(context)),
-                        title: const Text('Store Activity'),
-                        children: [
-                          widget.user.fdTipeSF == '1'
-                              ? Padding(
-                                  padding: const EdgeInsets.only(left: 10),
-                                  child: ListTile(
-                                    title:
-                                        const Text('Registrasi Langganan Baru'),
-                                    leading: Icon(Icons.store,
-                                        color: Colors.blue,
-                                        size: 24 *
-                                            ScaleSize.textScaleFactor(context)),
-                                    textColor: isStartDay ? null : Colors.grey,
-                                    onTap: (isStartDay
-                                        ? () {
-                                            Navigator.pop(context);
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    settings:
-                                                        const RouteSettings(
-                                                            name: 'noo'),
-                                                    builder: (context) =>
-                                                        NOOPage(
-                                                            user: widget.user,
-                                                            routeName: 'noo',
-                                                            isEndDay: isEndDay,
-                                                            startDayDate:
-                                                                startDayDate)));
-                                          }
-                                        : null),
-                                  ),
-                                )
-                              : Padding(
-                                  padding: const EdgeInsets.only(left: 10),
-                                  child: ListTile(
-                                    title:
-                                        const Text('Registrasi Langganan Baru'),
-                                    leading: Icon(Icons.store,
-                                        color: Colors.blue,
-                                        size: 24 *
-                                            ScaleSize.textScaleFactor(context)),
-                                    textColor: isStartDay ? null : Colors.grey,
-                                    onTap: (isStartDay
-                                        ? () {
-                                            Navigator.pop(context);
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    settings:
-                                                        const RouteSettings(
-                                                            name: 'noo'),
-                                                    builder: (context) =>
-                                                        NOOPage(
-                                                            user: widget.user,
-                                                            routeName: 'noo',
-                                                            isEndDay: isEndDay,
-                                                            startDayDate:
-                                                                startDayDate)));
-                                          }
-                                        : null),
-                                  ),
-                                ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: ListTile(
-                              title: const Text('Rute'),
-                              leading: Icon(Icons.route_rounded,
-                                  color: Colors.blue,
-                                  size:
-                                      24 * ScaleSize.textScaleFactor(context)),
-                              textColor: isStartDay ? null : Colors.grey,
-                              onTap: (isStartDay
-                                  ? () {
-                                      Navigator.pop(context);
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              settings: const RouteSettings(
-                                                  name: 'rute'),
-                                              builder: (context) => RutePage(
-                                                  user: widget.user,
-                                                  startDayDate: startDayDate,
-                                                  isEndDay: isEndDay,
-                                                  routeName: 'rute')));
-                                    }
-                                  : null),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: ListTile(
-                                title: const Text('Non Rute'),
-                                leading: Icon(Icons.share_location,
-                                    color: Colors.blue,
-                                    size: 24 *
-                                        ScaleSize.textScaleFactor(context)),
-                                textColor: isNonRuteValid ? null : Colors.grey,
-                                onTap: (isNonRuteValid
-                                    ? () {
-                                        Navigator.pop(context);
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    NonRutePage(
-                                                        user: widget.user,
-                                                        startDayDate:
-                                                            startDayDate,
-                                                        isEndDay: isEndDay)));
-                                      }
-                                    : null)),
-                          ),
+        //               ExpansionTile(
+        //                 leading: Icon(Icons.list_alt_rounded,
+        //                     color: Colors.blue,
+        //                     size: 24 * ScaleSize.textScaleFactor(context)),
+        //                 title: const Text('Store Activity'),
+        //                 children: [
+        //                   widget.user.fdTipeSF == '1'
+        //                       ? Padding(
+        //                           padding: const EdgeInsets.only(left: 10),
+        //                           child: ListTile(
+        //                             title:
+        //                                 const Text('Registrasi Langganan Baru'),
+        //                             leading: Icon(Icons.store,
+        //                                 color: Colors.blue,
+        //                                 size: 24 *
+        //                                     ScaleSize.textScaleFactor(context)),
+        //                             textColor: isStartDay ? null : Colors.grey,
+        //                             onTap: (isStartDay
+        //                                 ? () {
+        //                                     Navigator.pop(context);
+        //                                     Navigator.push(
+        //                                         context,
+        //                                         MaterialPageRoute(
+        //                                             settings:
+        //                                                 const RouteSettings(
+        //                                                     name: 'noo'),
+        //                                             builder: (context) =>
+        //                                                 NOOPage(
+        //                                                     user: widget.user,
+        //                                                     routeName: 'noo',
+        //                                                     isEndDay: isEndDay,
+        //                                                     startDayDate:
+        //                                                         startDayDate)));
+        //                                   }
+        //                                 : null),
+        //                           ),
+        //                         )
+        //                       : Padding(
+        //                           padding: const EdgeInsets.only(left: 10),
+        //                           child: ListTile(
+        //                             title:
+        //                                 const Text('Registrasi Langganan Baru'),
+        //                             leading: Icon(Icons.store,
+        //                                 color: Colors.blue,
+        //                                 size: 24 *
+        //                                     ScaleSize.textScaleFactor(context)),
+        //                             textColor: isStartDay ? null : Colors.grey,
+        //                             onTap: (isStartDay
+        //                                 ? () {
+        //                                     Navigator.pop(context);
+        //                                     Navigator.push(
+        //                                         context,
+        //                                         MaterialPageRoute(
+        //                                             settings:
+        //                                                 const RouteSettings(
+        //                                                     name: 'noo'),
+        //                                             builder: (context) =>
+        //                                                 NOOPage(
+        //                                                     user: widget.user,
+        //                                                     routeName: 'noo',
+        //                                                     isEndDay: isEndDay,
+        //                                                     startDayDate:
+        //                                                         startDayDate)));
+        //                                   }
+        //                                 : null),
+        //                           ),
+        //                         ),
+        //                   Padding(
+        //                     padding: const EdgeInsets.only(left: 10),
+        //                     child: ListTile(
+        //                       title: const Text('Rute'),
+        //                       leading: Icon(Icons.route_rounded,
+        //                           color: Colors.blue,
+        //                           size:
+        //                               24 * ScaleSize.textScaleFactor(context)),
+        //                       textColor: isStartDay ? null : Colors.grey,
+        //                       onTap: (isStartDay
+        //                           ? () {
+        //                               Navigator.pop(context);
+        //                               Navigator.push(
+        //                                   context,
+        //                                   MaterialPageRoute(
+        //                                       settings: const RouteSettings(
+        //                                           name: 'rute'),
+        //                                       builder: (context) => RutePage(
+        //                                           user: widget.user,
+        //                                           startDayDate: startDayDate,
+        //                                           isEndDay: isEndDay,
+        //                                           routeName: 'rute')));
+        //                             }
+        //                           : null),
+        //                     ),
+        //                   ),
+        //                   Padding(
+        //                     padding: const EdgeInsets.only(left: 10),
+        //                     child: ListTile(
+        //                         title: const Text('Non Rute'),
+        //                         leading: Icon(Icons.share_location,
+        //                             color: Colors.blue,
+        //                             size: 24 *
+        //                                 ScaleSize.textScaleFactor(context)),
+        //                         textColor: isNonRuteValid ? null : Colors.grey,
+        //                         onTap: (isNonRuteValid
+        //                             ? () {
+        //                                 Navigator.pop(context);
+        //                                 Navigator.push(
+        //                                     context,
+        //                                     MaterialPageRoute(
+        //                                         builder: (context) =>
+        //                                             NonRutePage(
+        //                                                 user: widget.user,
+        //                                                 startDayDate:
+        //                                                     startDayDate,
+        //                                                 isEndDay: isEndDay)));
+        //                               }
+        //                             : null)),
+        //                   ),
 
-                          // ListTile(
-                          //     title: const Text('Standard Planogram'),
-                          //     leading:
-                          //         Icon(Icons.burst_mode_sharp, //burst_mode_outlined,
-                          //             color: Colors.blue,
-                          //             size: 24 * ScaleSize.textScaleFactor(context)),
-                          //     textColor: isStartDay ? null : Colors.grey,
-                          //     onTap: (isStartDay
-                          //         ? () async {
-                          //             List<String> imgList = [];
-                          //             String localImagePath =
-                          //                 '${param.appDir}/${param.imgPathStandardPlano}';
+        //                   // ListTile(
+        //                   //     title: const Text('Standard Planogram'),
+        //                   //     leading:
+        //                   //         Icon(Icons.burst_mode_sharp, //burst_mode_outlined,
+        //                   //             color: Colors.blue,
+        //                   //             size: 24 * ScaleSize.textScaleFactor(context)),
+        //                   //     textColor: isStartDay ? null : Colors.grey,
+        //                   //     onTap: (isStartDay
+        //                   //         ? () async {
+        //                   //             List<String> imgList = [];
+        //                   //             String localImagePath =
+        //                   //                 '${param.appDir}/${param.imgPathStandardPlano}';
 
-                          //             List<mplano.StandardPlano> items =
-                          //                 await cplano.getStandardPlano();
-                          //             for (var element in items) {
-                          //               String namaFile =
-                          //                   '/${element.fdNamaLangganan}_${element.fdTipe}_${element.fdNoUrut}.jpg';
-                          //               imgList.add(
-                          //                   localImagePath + namaFile.toString());
-                          //             }
+        //                   //             List<mplano.StandardPlano> items =
+        //                   //                 await cplano.getStandardPlano();
+        //                   //             for (var element in items) {
+        //                   //               String namaFile =
+        //                   //                   '/${element.fdNamaLangganan}_${element.fdTipe}_${element.fdNoUrut}.jpg';
+        //                   //               imgList.add(
+        //                   //                   localImagePath + namaFile.toString());
+        //                   //             }
 
-                          //             if (!mounted) return;
+        //                   //             if (!mounted) return;
 
-                          //             Navigator.pop(context);
-                          //             Navigator.push(
-                          //                 context,
-                          //                 MaterialPageRoute(
-                          //                     settings: const RouteSettings(
-                          //                         name: 'stdplano'),
-                          //                     builder: (context) => ImagesViewPage(
-                          //                         user: widget.user,
-                          //                         routeName: 'stdplano',
-                          //                         imgList: imgList)));
-                          //           }
-                          //         : null)),
-                        ],
-                      ),
+        //                   //             Navigator.pop(context);
+        //                   //             Navigator.push(
+        //                   //                 context,
+        //                   //                 MaterialPageRoute(
+        //                   //                     settings: const RouteSettings(
+        //                   //                         name: 'stdplano'),
+        //                   //                     builder: (context) => ImagesViewPage(
+        //                   //                         user: widget.user,
+        //                   //                         routeName: 'stdplano',
+        //                   //                         imgList: imgList)));
+        //                   //           }
+        //                   //         : null)),
+        //                 ],
+        //               ),
 
-                      ExpansionTile(
-                        leading: Icon(Icons.storage,
-                            color: Colors.blue,
-                            size: 24 * ScaleSize.textScaleFactor(context)),
-                        title: const Text('File'),
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: ListTile(
-                                title: const Text('LASH'),
-                                leading: Icon(Icons.file_download,
-                                    color: Colors.blue,
-                                    size: 24 *
-                                        ScaleSize.textScaleFactor(context)),
-                                textColor: isEndDay ? null : Colors.grey,
-                                onTap: () {
-                                  print('ini ya');
-                                        Navigator.pop(context);
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                settings: const RouteSettings(
-                                                    name: 'pdfLash'),
-                                                builder: (context) =>
-                                                    PreviewLashPage(
-                                                        user: widget.user,
-                                                        routeName: 'pdfLash',
-                                                        startDayDate:
-                                                            startDayDate)));
-                                      }
-                                    ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: ListTile(
-                                title: const Text('Send Unsent Images'),
-                                leading: Icon(
-                                    Icons.upload_file, //burst_mode_outlined,
-                                    color: Colors.blue,
-                                    size: 24 *
-                                        ScaleSize.textScaleFactor(context)),
-                                textColor: isStartDay ? null : Colors.grey,
-                                onTap: (isStartDay
-                                    ? () async {
-                                        await confirmSendUnsentImages();
-                                      }
-                                    : null)),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: ListTile(
-                                title: const Text('Send Log'),
-                                leading: Icon(
-                                    Icons
-                                        .send_and_archive_sharp, //burst_mode_outlined,
-                                    color: Colors.blue,
-                                    size: 24 *
-                                        ScaleSize.textScaleFactor(context)),
-                                textColor: isStartDay ? null : Colors.grey,
-                                onTap: (isStartDay
-                                    ? () async {
-                                        await confirmSendLog();
-                                      }
-                                    : null)),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: ListTile(
-                                title: const Text('Send Backup Images'),
-                                leading: Icon(
-                                    Icons.upload_file, //burst_mode_outlined,
-                                    color: Colors.blue,
-                                    size: 24 *
-                                        ScaleSize.textScaleFactor(context)),
-                                textColor: isStartDay ? null : Colors.grey,
-                                onTap: (isStartDay
-                                    ? () {
-                                        Navigator.pop(context);
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                settings: const RouteSettings(
-                                                    name: 'backup'),
-                                                builder: (context) =>
-                                                    BackupPage(
-                                                        user: widget.user,
-                                                        startDayDate:
-                                                            startDayDate,
-                                                        routeName: 'backup')));
-                                      }
-                                    : null)),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              )),
+        //               ExpansionTile(
+        //                 leading: Icon(Icons.storage,
+        //                     color: Colors.blue,
+        //                     size: 24 * ScaleSize.textScaleFactor(context)),
+        //                 title: const Text('File'),
+        //                 children: [
+        //                   Padding(
+        //                     padding: const EdgeInsets.only(left: 10),
+        //                     child: ListTile(
+        //                         title: const Text('LASH'),
+        //                         leading: Icon(Icons.file_download,
+        //                             color: Colors.blue,
+        //                             size: 24 *
+        //                                 ScaleSize.textScaleFactor(context)),
+        //                         textColor: isEndDay ? null : Colors.grey,
+        //                         onTap: () {
+                                 
+        //                                 Navigator.pop(context);
+        //                                 Navigator.push(
+        //                                     context,
+        //                                     MaterialPageRoute(
+        //                                         settings: const RouteSettings(
+        //                                             name: 'pdfLash'),
+        //                                         builder: (context) =>
+        //                                             PreviewLashPage(
+        //                                                 user: widget.user,
+        //                                                 routeName: 'pdfLash',
+        //                                                 startDayDate:
+        //                                                     startDayDate)));
+        //                               }
+        //                             ),
+        //                   ),
+        //                   Padding(
+        //                     padding: const EdgeInsets.only(left: 10),
+        //                     child: ListTile(
+        //                         title: const Text('Send Unsent Images'),
+        //                         leading: Icon(
+        //                             Icons.upload_file, //burst_mode_outlined,
+        //                             color: Colors.blue,
+        //                             size: 24 *
+        //                                 ScaleSize.textScaleFactor(context)),
+        //                         textColor: isStartDay ? null : Colors.grey,
+        //                         onTap: (isStartDay
+        //                             ? () async {
+        //                                 await confirmSendUnsentImages();
+        //                               }
+        //                             : null)),
+        //                   ),
+        //                   Padding(
+        //                     padding: const EdgeInsets.only(left: 10),
+        //                     child: ListTile(
+        //                         title: const Text('Send Log'),
+        //                         leading: Icon(
+        //                             Icons
+        //                                 .send_and_archive_sharp, //burst_mode_outlined,
+        //                             color: Colors.blue,
+        //                             size: 24 *
+        //                                 ScaleSize.textScaleFactor(context)),
+        //                         textColor: isStartDay ? null : Colors.grey,
+        //                         onTap: (isStartDay
+        //                             ? () async {
+        //                                 await confirmSendLog();
+        //                               }
+        //                             : null)),
+        //                   ),
+        //                   Padding(
+        //                     padding: const EdgeInsets.only(left: 10),
+        //                     child: ListTile(
+        //                         title: const Text('Send Backup Images'),
+        //                         leading: Icon(
+        //                             Icons.upload_file, //burst_mode_outlined,
+        //                             color: Colors.blue,
+        //                             size: 24 *
+        //                                 ScaleSize.textScaleFactor(context)),
+        //                         textColor: isStartDay ? null : Colors.grey,
+        //                         onTap: (isStartDay
+        //                             ? () {
+        //                                 Navigator.pop(context);
+        //                                 Navigator.push(
+        //                                     context,
+        //                                     MaterialPageRoute(
+        //                                         settings: const RouteSettings(
+        //                                             name: 'backup'),
+        //                                         builder: (context) =>
+        //                                             BackupPage(
+        //                                                 user: widget.user,
+        //                                                 startDayDate:
+        //                                                     startDayDate,
+        //                                                 routeName: 'backup')));
+        //                               }
+        //                             : null)),
+        //                   ),
+        //                 ],
+        //               ),
+        //             ],
+        //           ),
+        //         ),
+        //       )),
         appBar: AppBar(
-          title: const Text('CRM'),
-          leading: Builder(
-            builder: (BuildContext context) {
-              return isLoading
-                  ? const Padding(padding: EdgeInsets.zero)
-                  : IconButton(
-                      icon: const Icon(Icons.menu),
-                      onPressed: () {
-                        Scaffold.of(context).openDrawer();
-                      },
-                      tooltip: MaterialLocalizations.of(context)
-                          .openAppDrawerTooltip,
-                    );
-            },
+          title:  Column(
+            children: [
+              Text('CRM'),
+            ],
           ),
+          
           actions: [
             isLoading
                 ? const Padding(padding: EdgeInsets.zero)
@@ -1595,15 +1598,25 @@ class LayerHome extends State<HomePage> {
                 ? const Padding(padding: EdgeInsets.zero)
                 : IconButton(
                     onPressed: () async {
-                      await cdb.logOut();
+                      FunctionHelper.AlertDialogCip(context,
+                       DialogCip(
+                        title: 'Logout?',
+                        message: 'Apakah anda ingin logout?',
+                        ok: 'Ya',
+                        onOk: ()async{
+                          await cdb.logOut();
 
-                      if (!mounted) return;
+                          if (!mounted) return;
 
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const LoginPage()),
-                          (Route<dynamic> route) => false);
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const LoginPage()),
+                              (Route<dynamic> route) => false);
+                        }
+
+                      ));
+                      
                     },
                     icon: Icon(Icons.logout,
                         size: 24 * ScaleSize.textScaleFactor(context)),
@@ -1623,548 +1636,556 @@ class LayerHome extends State<HomePage> {
 
                   return Future.delayed(const Duration(milliseconds: 500));
                 },
-                child: Padding(
-                  padding: const EdgeInsets.all(5),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Center(
-                          child: Text(
-                              '${widget.user.fdKodeSF} - ${widget.user.fdNamaSF}',
-                              style: css.textNormalBold())),
-                      const Padding(padding: EdgeInsets.all(20)),
-                      RichText(
-                          textScaleFactor: ScaleSize.textScaleFactor(context),
-                          text: TextSpan(
-                              style: css.textSmallSizeBlack(),
-                              children: [
-                                TextSpan(
-                                    text: 'Tanggal: ',
-                                    style: css.textNormalBold()),
-                                TextSpan(
-                                    text: param.dtFormatViewMMM.format(
-                                        param.dtFormatView.parse(todayDate))),
-                              ])),
-                      const Divider(height: 20, thickness: 1),
-                      Expanded(
-                          child: SingleChildScrollView(
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                      decoration: css.boxDecorTitle(),
-                                      padding: const EdgeInsets.all(5),
-                                      height: 50,
-                                      child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Expanded(
-                                                child: Text('Notifikasi',
-                                                    style:
-                                                        css.textHeaderBold())),
-                                          ])),
-                                  if (listNotif.isNotEmpty)
-                                    ...listNotif.map((entry) {
-                                      return Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 5, right: 5, bottom: 5),
-                                            child: SizedBox(
-                                              child: TextButton(
-                                                onPressed: () async {
-                                                  final url = entry['fdUrl'];
-                                                  if (url != null &&
-                                                      await canLaunchUrl(
-                                                          Uri.parse(url))) {
-                                                    await launchUrl(
-                                                        Uri.parse(url));
-                                                  }
-                                                },
-                                                child: badges.Badge(
-                                                  position: badges.BadgePosition
-                                                      .topEnd(
-                                                          top: -3, end: -33),
-                                                  showBadge: true,
-                                                  badgeContent: Text(
-                                                    entry['fdBadges']
-                                                        .toString(),
-                                                    textAlign: TextAlign.center,
-                                                    style: const TextStyle(
-                                                        color: Colors.white),
-                                                  ),
-                                                  badgeAnimation: const badges
-                                                      .BadgeAnimation.rotation(
-                                                    animationDuration:
-                                                        Duration(seconds: 1),
-                                                    colorChangeAnimationDuration:
-                                                        Duration(seconds: 1),
-                                                    loopAnimation: false,
-                                                    curve: Curves.fastOutSlowIn,
-                                                    colorChangeAnimationCurve:
-                                                        Curves.easeInCubic,
-                                                  ),
-                                                  badgeStyle:
-                                                      const badges.BadgeStyle(
-                                                    shape: badges
-                                                        .BadgeShape.circle,
-                                                    badgeColor: Colors.red,
-                                                    padding: EdgeInsets.only(
-                                                        left: 5, right: 5),
-                                                    // borderRadius:
-                                                    //     BorderRadius.circular(
-                                                    //         1),
-                                                    // borderSide: BorderSide(
-                                                    //     color: Colors.white,
-                                                    //     width: 1),
-                                                    // borderGradient:
-                                                    //     badges.BadgeGradient
-                                                    //         .linear(colors: [
-                                                    //   Colors.red,
-                                                    //   Colors.black
-                                                    // ]),
-                                                    // badgeGradient: badges
-                                                    //     .BadgeGradient.linear(
-                                                    //   colors: [
-                                                    //     Colors.blue,
-                                                    //     Colors.yellow
-                                                    //   ],
-                                                    //   begin:
-                                                    //       Alignment.topCenter,
-                                                    //   end: Alignment
-                                                    //       .bottomCenter,
-                                                    // ),
-                                                    elevation: 0,
-                                                  ),
-                                                  child: Text(
-                                                    entry['fdLabel'] ?? '---',
-                                                    style: const TextStyle(
-                                                        color: Colors.blue),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    }).toList()
-                                  else
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 5, right: 5, bottom: 5),
-                                          child: Text(
-                                            'Tidak ada notifikasi',
-                                            style: TextStyle(
-                                                color: Colors.grey[600]),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  Container(
-                                      decoration: css.boxDecorTitle(),
-                                      padding: const EdgeInsets.all(5),
-                                      height: 50,
-                                      child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Expanded(
-                                                child: Text('Daily Summary',
-                                                    style:
-                                                        css.textHeaderBold())),
-                                          ])),
-                                  const Padding(padding: EdgeInsets.all(5)),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      SizedBox(
-                                          width: 120 *
-                                              ScaleSize.textScaleFactor(
-                                                  context),
-                                          child: Card(
-                                            elevation: 3,
-                                            shadowColor: Colors.blue,
-                                            shape: css.boxStyle(),
-                                            color: Colors.blue[50],
-                                            child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(10),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: [
-                                                    const Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          Text('Plan Rute',
-                                                              style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ))
-                                                        ]),
-                                                    const Padding(
-                                                        padding:
-                                                            EdgeInsets.all(5)),
-                                                    Text(
-                                                      mapSFSummary['rute']
-                                                          .toString(),
-                                                    )
-                                                  ],
-                                                )),
-                                          )),
-                                      SizedBox(
-                                        width: 120 *
-                                            ScaleSize.textScaleFactor(context),
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            if (isNonRuteValid) {
-                                              // Navigator.pop(context);
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      NonRutePage(
-                                                    user: widget.user,
-                                                    startDayDate: startDayDate,
-                                                    isEndDay: isEndDay,
-                                                  ),
-                                                ),
-                                              );
-                                            } else {
-                                              null;
-                                            }
-                                          },
-                                          child: Card(
-                                            elevation: 3,
-                                            shadowColor: Colors.blue,
-                                            shape: css.boxStyle(),
-                                            color: Colors.blue[50],
-                                            child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(10),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: [
-                                                    const Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          Text('Non Rute',
-                                                              style: TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold))
-                                                        ]),
-                                                    const Padding(
-                                                        padding:
-                                                            EdgeInsets.all(5)),
-                                                    Text(
-                                                      mapSFSummary['nonrute']
-                                                          .toString(),
-                                                    )
-                                                  ],
-                                                )),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                          width: 120 *
-                                              ScaleSize.textScaleFactor(
-                                                  context),
-                                          child: Card(
-                                            elevation: 3,
-                                            shadowColor: Colors.blue,
-                                            shape: css.boxStyle(),
-                                            color: Colors.blue[50],
-                                            child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(10),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: [
-                                                    const Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          Text('Total Rute',
-                                                              style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ))
-                                                        ]),
-                                                    const Padding(
-                                                        padding:
-                                                            EdgeInsets.all(5)),
-                                                    Text(
-                                                      mapSFSummary['rute']
-                                                          .toString(),
-                                                    )
-                                                  ],
-                                                )),
-                                          )),
-                                    ],
-                                  ),
-                                  const Padding(padding: EdgeInsets.all(5)),
-                                  Container(
-                                      decoration: css.boxDecorTitle(),
-                                      padding: const EdgeInsets.all(5),
-                                      height: 50,
-                                      child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Expanded(
-                                                child: Text(
-                                                    'Target dan Realisasi',
-                                                    style:
-                                                        css.textHeaderBold())),
-                                          ])),
-                                  const Padding(padding: EdgeInsets.all(5)),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      SizedBox(
-                                        width: 120 *
-                                            ScaleSize.textScaleFactor(context),
-                                        child: const Text(''),
-                                      ),
-                                      SizedBox(
-                                        width: 90 *
-                                            ScaleSize.textScaleFactor(context),
-                                        child: const Text('Target Harian',
-                                            textAlign: TextAlign.center),
-                                      ),
-                                      SizedBox(
-                                        width: 90 *
-                                            ScaleSize.textScaleFactor(context),
-                                        child: const Text('Realisasi Hari ini',
-                                            textAlign: TextAlign.center),
-                                      ),
-                                    ],
-                                  ),
-                                  const Padding(padding: EdgeInsets.all(5)),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      SizedBox(
-                                        width: 120 *
-                                            ScaleSize.textScaleFactor(context),
-                                        child: const Text('NOO'),
-                                      ),
-                                      SizedBox(
-                                        width: 100 *
-                                            ScaleSize.textScaleFactor(context),
-                                        child: const Text('0',
-                                            textAlign: TextAlign.center),
-                                      ),
-                                      SizedBox(
-                                        width: 100 *
-                                            ScaleSize.textScaleFactor(context),
-                                        child: Text(
-                                            '${countNoo.toString()} Toko',
-                                            textAlign: TextAlign.center),
-                                      ),
-                                    ],
-                                  ),
-                                  const Padding(padding: EdgeInsets.all(5)),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      SizedBox(
-                                        width: 120 *
-                                            ScaleSize.textScaleFactor(context),
-                                        child: const Text('Call'),
-                                      ),
-                                      SizedBox(
-                                        width: 100 *
-                                            ScaleSize.textScaleFactor(context),
-                                        child: const Text('0',
-                                            textAlign: TextAlign.center),
-                                      ),
-                                      SizedBox(
-                                        width: 100 *
-                                            ScaleSize.textScaleFactor(context),
-                                        child: Text(
-                                            '${countCall.toString()} Toko',
-                                            textAlign: TextAlign.center),
-                                      ),
-                                    ],
-                                  ),
-                                  const Padding(padding: EdgeInsets.all(5)),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      SizedBox(
-                                        width: 120 *
-                                            ScaleSize.textScaleFactor(context),
-                                        child: const Text('Order CZ'),
-                                      ),
-                                      SizedBox(
-                                        width: 100 *
-                                            ScaleSize.textScaleFactor(context),
-                                        child: const Text('0',
-                                            textAlign: TextAlign.center),
-                                      ),
-                                      SizedBox(
-                                        width: 100 *
-                                            ScaleSize.textScaleFactor(context),
-                                        child: Text(
-                                            ' ${countOrderCZ.toString()} Toko',
-                                            textAlign: TextAlign.center),
-                                      ),
-                                    ],
-                                  ),
-                                  const Padding(padding: EdgeInsets.all(5)),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      SizedBox(
-                                        width: 120 *
-                                            ScaleSize.textScaleFactor(context),
-                                        child: const Text('Omzet CZ (LSN)'),
-                                      ),
-                                      SizedBox(
-                                        width: 100 *
-                                            ScaleSize.textScaleFactor(context),
-                                        child: const Text('0',
-                                            textAlign: TextAlign.center),
-                                      ),
-                                      SizedBox(
-                                        width: 100 *
-                                            ScaleSize.textScaleFactor(context),
-                                        child: Text(
-                                            '${param.idNumberFormatDec.format(omzetLusinCZ).toString()} LSN',
-                                            textAlign: TextAlign.center),
-                                      ),
-                                    ],
-                                  ),
-                                  const Padding(padding: EdgeInsets.all(5)),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      SizedBox(
-                                        width: 120 *
-                                            ScaleSize.textScaleFactor(context),
-                                        child: const Text('Total Rp CZ'),
-                                      ),
-                                      SizedBox(
-                                        width: 100 *
-                                            ScaleSize.textScaleFactor(context),
-                                        child: const Text('0',
-                                            textAlign: TextAlign.center),
-                                      ),
-                                      SizedBox(
-                                        width: 100 *
-                                            ScaleSize.textScaleFactor(context),
-                                        child: Text(
-                                            'Rp. ${param.enNumberFormat.format(totalOrderCZ).toString()}',
-                                            textAlign: TextAlign.center),
-                                      ),
-                                    ],
-                                  ),
-                                  const Padding(padding: EdgeInsets.all(5)),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      SizedBox(
-                                        width: 120 *
-                                            ScaleSize.textScaleFactor(context),
-                                        child: const Text('Order ALK'),
-                                      ),
-                                      SizedBox(
-                                        width: 100 *
-                                            ScaleSize.textScaleFactor(context),
-                                        child: const Text('0',
-                                            textAlign: TextAlign.center),
-                                      ),
-                                      SizedBox(
-                                        width: 100 *
-                                            ScaleSize.textScaleFactor(context),
-                                        child: Text(
-                                            '${countOrderALK.toString()} Toko',
-                                            textAlign: TextAlign.center),
-                                      ),
-                                    ],
-                                  ),
-                                  const Padding(padding: EdgeInsets.all(5)),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      SizedBox(
-                                        width: 120 *
-                                            ScaleSize.textScaleFactor(context),
-                                        child: const Text('Omzet ALK (CTN)'),
-                                      ),
-                                      SizedBox(
-                                        width: 100 *
-                                            ScaleSize.textScaleFactor(context),
-                                        child: const Text('0',
-                                            textAlign: TextAlign.center),
-                                      ),
-                                      SizedBox(
-                                        width: 100 *
-                                            ScaleSize.textScaleFactor(context),
-                                        child: Text(
-                                            '${param.idNumberFormatDec.format(omzetKartonALK).toString()} CTN',
-                                            textAlign: TextAlign.center),
-                                      ),
-                                    ],
-                                  ),
-                                  const Padding(padding: EdgeInsets.all(5)),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      SizedBox(
-                                        width: 120 *
-                                            ScaleSize.textScaleFactor(context),
-                                        child: const Text('Total Rp ALK'),
-                                      ),
-                                      SizedBox(
-                                        width: 100 *
-                                            ScaleSize.textScaleFactor(context),
-                                        child: const Text('0',
-                                            textAlign: TextAlign.center),
-                                      ),
-                                      SizedBox(
-                                        width: 100 *
-                                            ScaleSize.textScaleFactor(context),
-                                        child: Text(
-                                            'Rp. ${param.enNumberFormat.format(totalOrderALK).toString()}',
-                                            textAlign: TextAlign.center),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ))),
-                    ],
-                  ),
-                ),
+                child: HomeView(
+                  isStartDay: isStartDay,
+                  confirmSendUnsentImages:confirmSendUnsentImages,
+                  confirmSendLog:confirmSendLog,
+                  user: widget.user, todayDate: todayDate, listNotif: listNotif, mapSFSummary: mapSFSummary, isNonRuteValid: isNonRuteValid, startDayDate: startDayDate, isEndDay: isEndDay, countNoo: countNoo, countCall: countCall, countOrderALK: countOrderALK, countOrderCZ: countOrderCZ, omzetKartonALK: omzetKartonALK, omzetLusinCZ: omzetLusinCZ, totalOrderALK: totalOrderALK, totalOrderCZ: totalOrderCZ,)
+                
+                
+                
+                // Padding(
+                //   padding: const EdgeInsets.all(5),
+                //   child: Column(
+                //     crossAxisAlignment: CrossAxisAlignment.start,
+                //     children: [
+                //       Center(
+                //           child: Text(
+                //               '${widget.user.fdKodeSF} - ${widget.user.fdNamaSF}',
+                //               style: css.textNormalBold())),
+                //       const Padding(padding: EdgeInsets.all(20)),
+                //       RichText(
+                //           textScaleFactor: ScaleSize.textScaleFactor(context),
+                //           text: TextSpan(
+                //               style: css.textSmallSizeBlack(),
+                //               children: [
+                //                 TextSpan(
+                //                     text: 'Tanggal: ',
+                //                     style: css.textNormalBold()),
+                //                 TextSpan(
+                //                     text: param.dtFormatViewMMM.format(
+                //                         param.dtFormatView.parse(todayDate))),
+                //               ])),
+                //       const Divider(height: 20, thickness: 1),
+                //       Expanded(
+                //           child: SingleChildScrollView(
+                //               physics: const AlwaysScrollableScrollPhysics(),
+                //               child: Column(
+                //                 crossAxisAlignment: CrossAxisAlignment.center,
+                //                 children: [
+                //                   Container(
+                //                       decoration: css.boxDecorTitle(),
+                //                       padding: const EdgeInsets.all(5),
+                //                       height: 50,
+                //                       child: Row(
+                //                           mainAxisAlignment:
+                //                               MainAxisAlignment.start,
+                //                           children: [
+                //                             Expanded(
+                //                                 child: Text('Notifikasi',
+                //                                     style:
+                //                                         css.textHeaderBold())),
+                //                           ])),
+                //                   if (listNotif.isNotEmpty)
+                //                     ...listNotif.map((entry) {
+                //                       return Row(
+                //                         mainAxisAlignment:
+                //                             MainAxisAlignment.start,
+                //                         children: [
+                //                           Padding(
+                //                             padding: const EdgeInsets.only(
+                //                                 left: 5, right: 5, bottom: 5),
+                //                             child: SizedBox(
+                //                               child: TextButton(
+                //                                 onPressed: () async {
+                //                                   final url = entry['fdUrl'];
+                //                                   if (url != null &&
+                //                                       await canLaunchUrl(
+                //                                           Uri.parse(url))) {
+                //                                     await launchUrl(
+                //                                         Uri.parse(url));
+                //                                   }
+                //                                 },
+                //                                 child: badges.Badge(
+                //                                   position: badges.BadgePosition
+                //                                       .topEnd(
+                //                                           top: -3, end: -33),
+                //                                   showBadge: true,
+                //                                   badgeContent: Text(
+                //                                     entry['fdBadges']
+                //                                         .toString(),
+                //                                     textAlign: TextAlign.center,
+                //                                     style: const TextStyle(
+                //                                         color: Colors.white),
+                //                                   ),
+                //                                   badgeAnimation: const badges
+                //                                       .BadgeAnimation.rotation(
+                //                                     animationDuration:
+                //                                         Duration(seconds: 1),
+                //                                     colorChangeAnimationDuration:
+                //                                         Duration(seconds: 1),
+                //                                     loopAnimation: false,
+                //                                     curve: Curves.fastOutSlowIn,
+                //                                     colorChangeAnimationCurve:
+                //                                         Curves.easeInCubic,
+                //                                   ),
+                //                                   badgeStyle:
+                //                                       const badges.BadgeStyle(
+                //                                     shape: badges
+                //                                         .BadgeShape.circle,
+                //                                     badgeColor: Colors.red,
+                //                                     padding: EdgeInsets.only(
+                //                                         left: 5, right: 5),
+                //                                     // borderRadius:
+                //                                     //     BorderRadius.circular(
+                //                                     //         1),
+                //                                     // borderSide: BorderSide(
+                //                                     //     color: Colors.white,
+                //                                     //     width: 1),
+                //                                     // borderGradient:
+                //                                     //     badges.BadgeGradient
+                //                                     //         .linear(colors: [
+                //                                     //   Colors.red,
+                //                                     //   Colors.black
+                //                                     // ]),
+                //                                     // badgeGradient: badges
+                //                                     //     .BadgeGradient.linear(
+                //                                     //   colors: [
+                //                                     //     Colors.blue,
+                //                                     //     Colors.yellow
+                //                                     //   ],
+                //                                     //   begin:
+                //                                     //       Alignment.topCenter,
+                //                                     //   end: Alignment
+                //                                     //       .bottomCenter,
+                //                                     // ),
+                //                                     elevation: 0,
+                //                                   ),
+                //                                   child: Text(
+                //                                     entry['fdLabel'] ?? '---',
+                //                                     style: const TextStyle(
+                //                                         color: Colors.blue),
+                //                                   ),
+                //                                 ),
+                //                               ),
+                //                             ),
+                //                           ),
+                //                         ],
+                //                       );
+                //                     }).toList()
+                //                   else
+                //                     Row(
+                //                       mainAxisAlignment:
+                //                           MainAxisAlignment.start,
+                //                       children: [
+                //                         Padding(
+                //                           padding: const EdgeInsets.only(
+                //                               left: 5, right: 5, bottom: 5),
+                //                           child: Text(
+                //                             'Tidak ada notifikasi',
+                //                             style: TextStyle(
+                //                                 color: Colors.grey[600]),
+                //                           ),
+                //                         ),
+                //                       ],
+                //                     ),
+                //                   Container(
+                //                       decoration: css.boxDecorTitle(),
+                //                       padding: const EdgeInsets.all(5),
+                //                       height: 50,
+                //                       child: Row(
+                //                           mainAxisAlignment:
+                //                               MainAxisAlignment.start,
+                //                           children: [
+                //                             Expanded(
+                //                                 child: Text('Daily Summary',
+                //                                     style:
+                //                                         css.textHeaderBold())),
+                //                           ])),
+                //                   const Padding(padding: EdgeInsets.all(5)),
+                //                   Row(
+                //                     mainAxisAlignment:
+                //                         MainAxisAlignment.spaceEvenly,
+                //                     children: [
+                //                       SizedBox(
+                //                           width: 120 *
+                //                               ScaleSize.textScaleFactor(
+                //                                   context),
+                //                           child: Card(
+                //                             elevation: 3,
+                //                             shadowColor: Colors.blue,
+                //                             shape: css.boxStyle(),
+                //                             color: Colors.blue[50],
+                //                             child: Padding(
+                //                                 padding:
+                //                                     const EdgeInsets.all(10),
+                //                                 child: Column(
+                //                                   crossAxisAlignment:
+                //                                       CrossAxisAlignment.center,
+                //                                   children: [
+                //                                     const Row(
+                //                                         mainAxisAlignment:
+                //                                             MainAxisAlignment
+                //                                                 .center,
+                //                                         children: [
+                //                                           Text('Plan Rute',
+                //                                               style: TextStyle(
+                //                                                 fontWeight:
+                //                                                     FontWeight
+                //                                                         .bold,
+                //                                               ))
+                //                                         ]),
+                //                                     const Padding(
+                //                                         padding:
+                //                                             EdgeInsets.all(5)),
+                //                                     Text(
+                //                                       mapSFSummary['rute']
+                //                                           .toString(),
+                //                                     )
+                //                                   ],
+                //                                 )),
+                //                           )),
+                //                       SizedBox(
+                //                         width: 120 *
+                //                             ScaleSize.textScaleFactor(context),
+                //                         child: GestureDetector(
+                //                           onTap: () {
+                //                             if (isNonRuteValid) {
+                //                               // Navigator.pop(context);
+                //                               Navigator.push(
+                //                                 context,
+                //                                 MaterialPageRoute(
+                //                                   builder: (context) =>
+                //                                       NonRutePage(
+                //                                     user: widget.user,
+                //                                     startDayDate: startDayDate,
+                //                                     isEndDay: isEndDay,
+                //                                   ),
+                //                                 ),
+                //                               );
+                //                             } else {
+                //                               null;
+                //                             }
+                //                           },
+                //                           child: Card(
+                //                             elevation: 3,
+                //                             shadowColor: Colors.blue,
+                //                             shape: css.boxStyle(),
+                //                             color: Colors.blue[50],
+                //                             child: Padding(
+                //                                 padding:
+                //                                     const EdgeInsets.all(10),
+                //                                 child: Column(
+                //                                   crossAxisAlignment:
+                //                                       CrossAxisAlignment.center,
+                //                                   children: [
+                //                                     const Row(
+                //                                         mainAxisAlignment:
+                //                                             MainAxisAlignment
+                //                                                 .center,
+                //                                         children: [
+                //                                           Text('Non Rute',
+                //                                               style: TextStyle(
+                //                                                   fontWeight:
+                //                                                       FontWeight
+                //                                                           .bold))
+                //                                         ]),
+                //                                     const Padding(
+                //                                         padding:
+                //                                             EdgeInsets.all(5)),
+                //                                     Text(
+                //                                       mapSFSummary['nonrute']
+                //                                           .toString(),
+                //                                     )
+                //                                   ],
+                //                                 )),
+                //                           ),
+                //                         ),
+                //                       ),
+                //                       SizedBox(
+                //                           width: 120 *
+                //                               ScaleSize.textScaleFactor(
+                //                                   context),
+                //                           child: Card(
+                //                             elevation: 3,
+                //                             shadowColor: Colors.blue,
+                //                             shape: css.boxStyle(),
+                //                             color: Colors.blue[50],
+                //                             child: Padding(
+                //                                 padding:
+                //                                     const EdgeInsets.all(10),
+                //                                 child: Column(
+                //                                   crossAxisAlignment:
+                //                                       CrossAxisAlignment.center,
+                //                                   children: [
+                //                                     const Row(
+                //                                         mainAxisAlignment:
+                //                                             MainAxisAlignment
+                //                                                 .center,
+                //                                         children: [
+                //                                           Text('Total Rute',
+                //                                               style: TextStyle(
+                //                                                 fontWeight:
+                //                                                     FontWeight
+                //                                                         .bold,
+                //                                               ))
+                //                                         ]),
+                //                                     const Padding(
+                //                                         padding:
+                //                                             EdgeInsets.all(5)),
+                //                                     Text(
+                //                                       mapSFSummary['rute']
+                //                                           .toString(),
+                //                                     )
+                //                                   ],
+                //                                 )),
+                //                           )),
+                //                     ],
+                //                   ),
+                //                   const Padding(padding: EdgeInsets.all(5)),
+                //                   Container(
+                //                       decoration: css.boxDecorTitle(),
+                //                       padding: const EdgeInsets.all(5),
+                //                       height: 50,
+                //                       child: Row(
+                //                           mainAxisAlignment:
+                //                               MainAxisAlignment.start,
+                //                           children: [
+                //                             Expanded(
+                //                                 child: Text(
+                //                                     'Target dan Realisasi',
+                //                                     style:
+                //                                         css.textHeaderBold())),
+                //                           ])),
+                //                   const Padding(padding: EdgeInsets.all(5)),
+                //                   Row(
+                //                     mainAxisAlignment:
+                //                         MainAxisAlignment.spaceEvenly,
+                //                     children: [
+                //                       SizedBox(
+                //                         width: 120 *
+                //                             ScaleSize.textScaleFactor(context),
+                //                         child: const Text(''),
+                //                       ),
+                //                       SizedBox(
+                //                         width: 90 *
+                //                             ScaleSize.textScaleFactor(context),
+                //                         child: const Text('Target Harian',
+                //                             textAlign: TextAlign.center),
+                //                       ),
+                //                       SizedBox(
+                //                         width: 90 *
+                //                             ScaleSize.textScaleFactor(context),
+                //                         child: const Text('Realisasi Hari ini',
+                //                             textAlign: TextAlign.center),
+                //                       ),
+                //                     ],
+                //                   ),
+                //                   const Padding(padding: EdgeInsets.all(5)),
+                //                   Row(
+                //                     mainAxisAlignment:
+                //                         MainAxisAlignment.spaceEvenly,
+                //                     children: [
+                //                       SizedBox(
+                //                         width: 120 *
+                //                             ScaleSize.textScaleFactor(context),
+                //                         child: const Text('NOO'),
+                //                       ),
+                //                       SizedBox(
+                //                         width: 100 *
+                //                             ScaleSize.textScaleFactor(context),
+                //                         child: const Text('0',
+                //                             textAlign: TextAlign.center),
+                //                       ),
+                //                       SizedBox(
+                //                         width: 100 *
+                //                             ScaleSize.textScaleFactor(context),
+                //                         child: Text(
+                //                             '${countNoo.toString()} Toko',
+                //                             textAlign: TextAlign.center),
+                //                       ),
+                //                     ],
+                //                   ),
+                //                   const Padding(padding: EdgeInsets.all(5)),
+                //                   Row(
+                //                     mainAxisAlignment:
+                //                         MainAxisAlignment.spaceEvenly,
+                //                     children: [
+                //                       SizedBox(
+                //                         width: 120 *
+                //                             ScaleSize.textScaleFactor(context),
+                //                         child: const Text('Call'),
+                //                       ),
+                //                       SizedBox(
+                //                         width: 100 *
+                //                             ScaleSize.textScaleFactor(context),
+                //                         child: const Text('0',
+                //                             textAlign: TextAlign.center),
+                //                       ),
+                //                       SizedBox(
+                //                         width: 100 *
+                //                             ScaleSize.textScaleFactor(context),
+                //                         child: Text(
+                //                             '${countCall.toString()} Toko',
+                //                             textAlign: TextAlign.center),
+                //                       ),
+                //                     ],
+                //                   ),
+                //                   const Padding(padding: EdgeInsets.all(5)),
+                //                   Row(
+                //                     mainAxisAlignment:
+                //                         MainAxisAlignment.spaceEvenly,
+                //                     children: [
+                //                       SizedBox(
+                //                         width: 120 *
+                //                             ScaleSize.textScaleFactor(context),
+                //                         child: const Text('Order CZ'),
+                //                       ),
+                //                       SizedBox(
+                //                         width: 100 *
+                //                             ScaleSize.textScaleFactor(context),
+                //                         child: const Text('0',
+                //                             textAlign: TextAlign.center),
+                //                       ),
+                //                       SizedBox(
+                //                         width: 100 *
+                //                             ScaleSize.textScaleFactor(context),
+                //                         child: Text(
+                //                             ' ${countOrderCZ.toString()} Toko',
+                //                             textAlign: TextAlign.center),
+                //                       ),
+                //                     ],
+                //                   ),
+                //                   const Padding(padding: EdgeInsets.all(5)),
+                //                   Row(
+                //                     mainAxisAlignment:
+                //                         MainAxisAlignment.spaceEvenly,
+                //                     children: [
+                //                       SizedBox(
+                //                         width: 120 *
+                //                             ScaleSize.textScaleFactor(context),
+                //                         child: const Text('Omzet CZ (LSN)'),
+                //                       ),
+                //                       SizedBox(
+                //                         width: 100 *
+                //                             ScaleSize.textScaleFactor(context),
+                //                         child: const Text('0',
+                //                             textAlign: TextAlign.center),
+                //                       ),
+                //                       SizedBox(
+                //                         width: 100 *
+                //                             ScaleSize.textScaleFactor(context),
+                //                         child: Text(
+                //                             '${param.idNumberFormatDec.format(omzetLusinCZ).toString()} LSN',
+                //                             textAlign: TextAlign.center),
+                //                       ),
+                //                     ],
+                //                   ),
+                //                   const Padding(padding: EdgeInsets.all(5)),
+                //                   Row(
+                //                     mainAxisAlignment:
+                //                         MainAxisAlignment.spaceEvenly,
+                //                     children: [
+                //                       SizedBox(
+                //                         width: 120 *
+                //                             ScaleSize.textScaleFactor(context),
+                //                         child: const Text('Total Rp CZ'),
+                //                       ),
+                //                       SizedBox(
+                //                         width: 100 *
+                //                             ScaleSize.textScaleFactor(context),
+                //                         child: const Text('0',
+                //                             textAlign: TextAlign.center),
+                //                       ),
+                //                       SizedBox(
+                //                         width: 100 *
+                //                             ScaleSize.textScaleFactor(context),
+                //                         child: Text(
+                //                             'Rp. ${param.enNumberFormat.format(totalOrderCZ).toString()}',
+                //                             textAlign: TextAlign.center),
+                //                       ),
+                //                     ],
+                //                   ),
+                //                   const Padding(padding: EdgeInsets.all(5)),
+                //                   Row(
+                //                     mainAxisAlignment:
+                //                         MainAxisAlignment.spaceEvenly,
+                //                     children: [
+                //                       SizedBox(
+                //                         width: 120 *
+                //                             ScaleSize.textScaleFactor(context),
+                //                         child: const Text('Order ALK'),
+                //                       ),
+                //                       SizedBox(
+                //                         width: 100 *
+                //                             ScaleSize.textScaleFactor(context),
+                //                         child: const Text('0',
+                //                             textAlign: TextAlign.center),
+                //                       ),
+                //                       SizedBox(
+                //                         width: 100 *
+                //                             ScaleSize.textScaleFactor(context),
+                //                         child: Text(
+                //                             '${countOrderALK.toString()} Toko',
+                //                             textAlign: TextAlign.center),
+                //                       ),
+                //                     ],
+                //                   ),
+                //                   const Padding(padding: EdgeInsets.all(5)),
+                //                   Row(
+                //                     mainAxisAlignment:
+                //                         MainAxisAlignment.spaceEvenly,
+                //                     children: [
+                //                       SizedBox(
+                //                         width: 120 *
+                //                             ScaleSize.textScaleFactor(context),
+                //                         child: const Text('Omzet ALK (CTN)'),
+                //                       ),
+                //                       SizedBox(
+                //                         width: 100 *
+                //                             ScaleSize.textScaleFactor(context),
+                //                         child: const Text('0',
+                //                             textAlign: TextAlign.center),
+                //                       ),
+                //                       SizedBox(
+                //                         width: 100 *
+                //                             ScaleSize.textScaleFactor(context),
+                //                         child: Text(
+                //                             '${param.idNumberFormatDec.format(omzetKartonALK).toString()} CTN',
+                //                             textAlign: TextAlign.center),
+                //                       ),
+                //                     ],
+                //                   ),
+                //                   const Padding(padding: EdgeInsets.all(5)),
+                //                   Row(
+                //                     mainAxisAlignment:
+                //                         MainAxisAlignment.spaceEvenly,
+                //                     children: [
+                //                       SizedBox(
+                //                         width: 120 *
+                //                             ScaleSize.textScaleFactor(context),
+                //                         child: const Text('Total Rp ALK'),
+                //                       ),
+                //                       SizedBox(
+                //                         width: 100 *
+                //                             ScaleSize.textScaleFactor(context),
+                //                         child: const Text('0',
+                //                             textAlign: TextAlign.center),
+                //                       ),
+                //                       SizedBox(
+                //                         width: 100 *
+                //                             ScaleSize.textScaleFactor(context),
+                //                         child: Text(
+                //                             'Rp. ${param.enNumberFormat.format(totalOrderALK).toString()}',
+                //                             textAlign: TextAlign.center),
+                //                       ),
+                //                     ],
+                //                   ),
+                //                 ],
+                //               ))),
+                //     ],
+                //   ),
+                // ),
               ),
         // sugeng remark tidak pakain next day
         // floatingActionButton: isLoading
@@ -2181,197 +2202,424 @@ class LayerHome extends State<HomePage> {
         //       ),
         // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         // sugeng end remark
-        bottomNavigationBar: (isLoading
-            ? const Padding(padding: EdgeInsets.zero)
-            : BottomAppBar(
-                notchMargin: 5,
-                clipBehavior: Clip.hardEdge,
-                shape: const CircularNotchedRectangle(),
-                child: Row(
-                  children: [
-                    Expanded(
-                        child: TextButton.icon(
-                            style: TextButton.styleFrom(
-                                foregroundColor: Colors.amber[600]),
-                            onPressed: () async {
-                              try {
-                                //JIKA TIPE CANVAS MAKA VALIDASI APA SUDAH INPUT STOCK DAN RENCANA RUTE
-// param.dtFormatDB.format(DateTime.now())
-                                if (widget.user.fdTipeSF == '1' &&
-                                    isStartDay == false) {
-                                  isRencanaRuteExists = await crute
-                                      .checkRencanaRuteExists(param.dtFormatDB
-                                          .format(DateTime.now()));
-                                  isStockVerifyExists = await cstock
-                                      .checkStockVerifyExists(param.dtFormatDB
-                                          .format(DateTime.now()));
-
-                                  if (!isRencanaRuteExists) {
-                                    if (!mounted) return;
-                                    ScaffoldMessenger.of(context)
-                                      ..removeCurrentSnackBar()
-                                      ..showSnackBar(const SnackBar(
-                                          content: Text(
-                                              'Tidak bisa Start Day. Belum ada Rencana Rute untuk hari ini')));
-                                    return;
-                                  }
-                                  if (!isStockVerifyExists) {
-                                    if (!mounted) return;
-                                    ScaffoldMessenger.of(context)
-                                      ..removeCurrentSnackBar()
-                                      ..showSnackBar(const SnackBar(
-                                          content: Text(
-                                              'Stock hari ini belum diverifikasi!')));
-                                    return;
-                                  }
-                                  int responseCode = 0;
-                                  responseCode =
-                                      await capi.validasiSfaMsRencanaRute(
-                                          widget.user.fdToken,
-                                          widget.user.fdKodeSF,
-                                          widget.user.fdKodeDepo,
-                                          startDayDate,
-                                          startDayDate,
-                                          'S',
-                                          startDayDate);
-                                  if (responseCode == 401) {
-                                    if (!mounted) return;
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                            content: Text('Session expired')));
-                                    return;
-                                  } else if (responseCode == 0) {
-                                    if (!mounted) return;
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
+        bottomNavigationBar: isLoading ? SizedBox.shrink() :
+        
+        Container(
+          height: 70,
+          child: Row(
+            children: [
+              Expanded(
+                child: InkWell(
+                  onTap: ()async{
+                    try {
+                                  //JIKA TIPE CANVAS MAKA VALIDASI APA SUDAH INPUT STOCK DAN RENCANA RUTE
+                      // param.dtFormatDB.format(DateTime.now())
+                                  if (widget.user.fdTipeSF == '1' &&
+                                      isStartDay == false) {
+                                    isRencanaRuteExists = await crute
+                                        .checkRencanaRuteExists(param.dtFormatDB
+                                            .format(DateTime.now()));
+                                    isStockVerifyExists = await cstock
+                                        .checkStockVerifyExists(param.dtFormatDB
+                                            .format(DateTime.now()));
+                      
+                                    if (!isRencanaRuteExists) {
+                                      if (!mounted) return;
+                                      ScaffoldMessenger.of(context)
+                                        ..removeCurrentSnackBar()
+                                        ..showSnackBar(const SnackBar(
                                             content: Text(
-                                                'Rencana rute belum di approve')));
-                                    return;
-                                  } else if (responseCode == 408) {
+                                                'Tidak bisa Start Day. Belum ada Rencana Rute untuk hari ini')));
+                                      return;
+                                    }
+                                    if (!isStockVerifyExists) {
+                                      if (!mounted) return;
+                                      ScaffoldMessenger.of(context)
+                                        ..removeCurrentSnackBar()
+                                        ..showSnackBar(const SnackBar(
+                                            content: Text(
+                                                'Stock hari ini belum diverifikasi!')));
+                                      return;
+                                    }
+                                    int responseCode = 0;
+                                    responseCode =
+                                        await capi.validasiSfaMsRencanaRute(
+                                            widget.user.fdToken,
+                                            widget.user.fdKodeSF,
+                                            widget.user.fdKodeDepo,
+                                            startDayDate,
+                                            startDayDate,
+                                            'S',
+                                            startDayDate);
+                                    if (responseCode == 401) {
+                                      if (!mounted) return;
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(
+                                              content: Text('Session expired')));
+                                      return;
+                                    } else if (responseCode == 0) {
+                                      if (!mounted) return;
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(
+                                              content: Text(
+                                                  'Rencana rute belum di approve')));
+                                      return;
+                                    } else if (responseCode == 408) {
+                                      if (!mounted) return;
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(
+                                              content: Text('Error timeout')));
+                                      return;
+                                    }
+                                  }
+                                  setState(() {
+                                    isLoading = true;
+                                  });
+                                  bool isDateTimeSettingValid =
+                                      await cother.dateTimeSettingValidation();
+                      
+                                  if (isDateTimeSettingValid) {
+                                    //Code sent data transaksi di DB via API untuk log
+                                    if (!isStartDay) {
+                                      //jika belum start day
+                                      await syncData(0);
+                                      // await cdb.deleteTransactionAndFiles(false);
+                                      //sugeng start add proses nextday
+                                    } else if ((isEndDay &&
+                                            todayDate !=
+                                                param.dtFormatView
+                                                    .format(DateTime.now())) ||
+                                        !isStartDay) {
+                                      final SharedPreferences prefs =
+                                          await SharedPreferences.getInstance();
+                                      final String? fdTanggal =
+                                          prefs.getString('startDayDate');
+                      
+                                      await deleteZip();
+                                      await capi.sendLogTransaction(
+                                          widget.user, fdTanggal!);
+                                      await cdb.deleteTransactionAndFiles();
+                      
+                                      await prefs.clear();
+                                      await prefs.setString(
+                                          'startDayDate',
+                                          param.dtFormatDB
+                                              .format(DateTime.now()));
+                      
+                                      await syncData(0);
+                                      await initLoadPage();
+                      
+                                      service.invoke("stopService");
+                      
+                                      if (!mounted) return;
+                      
+                                      ScaffoldMessenger.of(context)
+                                        ..removeCurrentSnackBar()
+                                        ..showSnackBar(const SnackBar(
+                                            content: Text(
+                                                'Sukses mulai hari berikut')));
+                                    }
+                                    //sugeng end add proses nextday
+                      
                                     if (!mounted) return;
+                      
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            settings: const RouteSettings(
+                                                name: 'startday'),
+                                            builder: (context) => StartDayPage(
+                                                user: widget.user,
+                                                routeName: 'startday',
+                                                startDayDate: startDayDate)));
+                                  }
+                      
+                                  setState(() {
+                                    isLoading = false;
+                                  });
+                                } catch (e) {
+                                  setState(() {
+                                    isLoading = false;
+                                  });
+                      
+                                  if (!mounted) return;
+                                  if (e == 408) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(
                                             content: Text('Error timeout')));
-                                    return;
-                                  }
-                                }
-                                setState(() {
-                                  isLoading = true;
-                                });
-                                bool isDateTimeSettingValid =
-                                    await cother.dateTimeSettingValidation();
-
-                                if (isDateTimeSettingValid) {
-                                  //Code sent data transaksi di DB via API untuk log
-                                  if (!isStartDay) {
-                                    //jika belum start day
-                                    await syncData(0);
-                                    // await cdb.deleteTransactionAndFiles(false);
-                                    //sugeng start add proses nextday
-                                  } else if ((isEndDay &&
-                                          todayDate !=
-                                              param.dtFormatView
-                                                  .format(DateTime.now())) ||
-                                      !isStartDay) {
-                                    final SharedPreferences prefs =
-                                        await SharedPreferences.getInstance();
-                                    final String? fdTanggal =
-                                        prefs.getString('startDayDate');
-
-                                    await deleteZip();
-                                    await capi.sendLogTransaction(
-                                        widget.user, fdTanggal!);
-                                    await cdb.deleteTransactionAndFiles();
-
-                                    await prefs.clear();
-                                    await prefs.setString(
-                                        'startDayDate',
-                                        param.dtFormatDB
-                                            .format(DateTime.now()));
-
-                                    await syncData(0);
-                                    await initLoadPage();
-
-                                    service.invoke("stopService");
-
-                                    if (!mounted) return;
-
+                                    await sessionExpired();
+                                  } else {
                                     ScaffoldMessenger.of(context)
                                       ..removeCurrentSnackBar()
-                                      ..showSnackBar(const SnackBar(
-                                          content: Text(
-                                              'Sukses mulai hari berikut')));
+                                      ..showSnackBar(
+                                          SnackBar(content: Text('error: $e')));
                                   }
-                                  //sugeng end add proses nextday
-
-                                  if (!mounted) return;
-
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          settings: const RouteSettings(
-                                              name: 'startday'),
-                                          builder: (context) => StartDayPage(
-                                              user: widget.user,
-                                              routeName: 'startday',
-                                              startDayDate: startDayDate)));
                                 }
-
-                                setState(() {
-                                  isLoading = false;
-                                });
-                              } catch (e) {
-                                setState(() {
-                                  isLoading = false;
-                                });
-
-                                if (!mounted) return;
-                                if (e == 408) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text('Error timeout')));
-                                  await sessionExpired();
-                                } else {
-                                  ScaffoldMessenger.of(context)
-                                    ..removeCurrentSnackBar()
-                                    ..showSnackBar(
-                                        SnackBar(content: Text('error: $e')));
-                                }
-                              }
-                            },
-                            icon: Icon(Icons.man_rounded,
-                                size: 24 * ScaleSize.textScaleFactor(context)),
-                            label: fdJamStartDay == ''
-                                ? const Text('Start Day')
-                                : Text(
-                                    // 'Start Day\n$fdJamStartDay KM $fdKmStartDay',
-                                    'Start Day\n$fdJamStartDay',
-                                    style: TextStyle(
-                                        fontSize: 10 *
-                                            ScaleSize.textScaleFactor(context)),
-                                  ))),
-                    Expanded(
-                        child: TextButton.icon(
-                            style: TextButton.styleFrom(
-                                foregroundColor: Colors.amber[600]),
-                            onPressed: () {
-                              endDayValidation();
-                            },
-                            icon: Icon(
-                                Icons.airline_seat_recline_normal_rounded,
-                                size: 24 * ScaleSize.textScaleFactor(context)),
-                            label: fdJamEndDay == ''
-                                ? const Text('End Day')
-                                : Text(
-                                    // 'End Day\n$fdJamEndDay KM $fdKmEndDay',
-                                    'End Day\n$fdJamEndDay',
-                                    style: TextStyle(
-                                        fontSize: 10 *
-                                            ScaleSize.textScaleFactor(context)),
-                                  ))),
-                  ],
+                  },
+                  child: Ink(
+                    height: double.infinity,
+                    color: ColorHelper.primary,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Icon(Icons.man_rounded,
+                        color: Colors.white,
+                                  size: 24 * ScaleSize.textScaleFactor(context)),
+                        Text('Start Day', style: TextStyle(color: Colors.white)),
+                      ],
+                    ),
+                  ),
                 ),
-              )),
+              ),
+              Expanded(
+                child: InkWell(
+                  onTap: (){
+                    endDayValidation();
+                  },
+                  child: Ink(
+                    color: ColorHelper.secondary,
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Icon(Icons.airline_seat_recline_normal_rounded,
+                          color: Colors.white,
+                                    size: 24 * ScaleSize.textScaleFactor(context)),
+                          Text('End Day', style: TextStyle(color: Colors.white)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          )
+        ),
+        
+        // (isLoading
+        //     ? const Padding(padding: EdgeInsets.zero)
+        //     : BottomAppBar(
+        //         notchMargin: 5,
+        //         clipBehavior: Clip.hardEdge,
+        //         shape: const CircularNotchedRectangle(),
+        //         child: Row(
+        //           children: [
+        //             Expanded(
+        //               child: CustomButtonComponent(
+                      
+        //                 onPressed: ()async{
+        //                   try {
+        //                           //JIKA TIPE CANVAS MAKA VALIDASI APA SUDAH INPUT STOCK DAN RENCANA RUTE
+        //               // param.dtFormatDB.format(DateTime.now())
+        //                           if (widget.user.fdTipeSF == '1' &&
+        //                               isStartDay == false) {
+        //                             isRencanaRuteExists = await crute
+        //                                 .checkRencanaRuteExists(param.dtFormatDB
+        //                                     .format(DateTime.now()));
+        //                             isStockVerifyExists = await cstock
+        //                                 .checkStockVerifyExists(param.dtFormatDB
+        //                                     .format(DateTime.now()));
+                      
+        //                             if (!isRencanaRuteExists) {
+        //                               if (!mounted) return;
+        //                               ScaffoldMessenger.of(context)
+        //                                 ..removeCurrentSnackBar()
+        //                                 ..showSnackBar(const SnackBar(
+        //                                     content: Text(
+        //                                         'Tidak bisa Start Day. Belum ada Rencana Rute untuk hari ini')));
+        //                               return;
+        //                             }
+        //                             if (!isStockVerifyExists) {
+        //                               if (!mounted) return;
+        //                               ScaffoldMessenger.of(context)
+        //                                 ..removeCurrentSnackBar()
+        //                                 ..showSnackBar(const SnackBar(
+        //                                     content: Text(
+        //                                         'Stock hari ini belum diverifikasi!')));
+        //                               return;
+        //                             }
+        //                             int responseCode = 0;
+        //                             responseCode =
+        //                                 await capi.validasiSfaMsRencanaRute(
+        //                                     widget.user.fdToken,
+        //                                     widget.user.fdKodeSF,
+        //                                     widget.user.fdKodeDepo,
+        //                                     startDayDate,
+        //                                     startDayDate,
+        //                                     'S',
+        //                                     startDayDate);
+        //                             if (responseCode == 401) {
+        //                               if (!mounted) return;
+        //                               ScaffoldMessenger.of(context).showSnackBar(
+        //                                   const SnackBar(
+        //                                       content: Text('Session expired')));
+        //                               return;
+        //                             } else if (responseCode == 0) {
+        //                               if (!mounted) return;
+        //                               ScaffoldMessenger.of(context).showSnackBar(
+        //                                   const SnackBar(
+        //                                       content: Text(
+        //                                           'Rencana rute belum di approve')));
+        //                               return;
+        //                             } else if (responseCode == 408) {
+        //                               if (!mounted) return;
+        //                               ScaffoldMessenger.of(context).showSnackBar(
+        //                                   const SnackBar(
+        //                                       content: Text('Error timeout')));
+        //                               return;
+        //                             }
+        //                           }
+        //                           setState(() {
+        //                             isLoading = true;
+        //                           });
+        //                           bool isDateTimeSettingValid =
+        //                               await cother.dateTimeSettingValidation();
+                      
+        //                           if (isDateTimeSettingValid) {
+        //                             //Code sent data transaksi di DB via API untuk log
+        //                             if (!isStartDay) {
+        //                               //jika belum start day
+        //                               await syncData(0);
+        //                               // await cdb.deleteTransactionAndFiles(false);
+        //                               //sugeng start add proses nextday
+        //                             } else if ((isEndDay &&
+        //                                     todayDate !=
+        //                                         param.dtFormatView
+        //                                             .format(DateTime.now())) ||
+        //                                 !isStartDay) {
+        //                               final SharedPreferences prefs =
+        //                                   await SharedPreferences.getInstance();
+        //                               final String? fdTanggal =
+        //                                   prefs.getString('startDayDate');
+                      
+        //                               await deleteZip();
+        //                               await capi.sendLogTransaction(
+        //                                   widget.user, fdTanggal!);
+        //                               await cdb.deleteTransactionAndFiles();
+                      
+        //                               await prefs.clear();
+        //                               await prefs.setString(
+        //                                   'startDayDate',
+        //                                   param.dtFormatDB
+        //                                       .format(DateTime.now()));
+                      
+        //                               await syncData(0);
+        //                               await initLoadPage();
+                      
+        //                               service.invoke("stopService");
+                      
+        //                               if (!mounted) return;
+                      
+        //                               ScaffoldMessenger.of(context)
+        //                                 ..removeCurrentSnackBar()
+        //                                 ..showSnackBar(const SnackBar(
+        //                                     content: Text(
+        //                                         'Sukses mulai hari berikut')));
+        //                             }
+        //                             //sugeng end add proses nextday
+                      
+        //                             if (!mounted) return;
+                      
+        //                             Navigator.push(
+        //                                 context,
+        //                                 MaterialPageRoute(
+        //                                     settings: const RouteSettings(
+        //                                         name: 'startday'),
+        //                                     builder: (context) => StartDayPage(
+        //                                         user: widget.user,
+        //                                         routeName: 'startday',
+        //                                         startDayDate: startDayDate)));
+        //                           }
+                      
+        //                           setState(() {
+        //                             isLoading = false;
+        //                           });
+        //                         } catch (e) {
+        //                           setState(() {
+        //                             isLoading = false;
+        //                           });
+                      
+        //                           if (!mounted) return;
+        //                           if (e == 408) {
+        //                             ScaffoldMessenger.of(context).showSnackBar(
+        //                                 const SnackBar(
+        //                                     content: Text('Error timeout')));
+        //                             await sessionExpired();
+        //                           } else {
+        //                             ScaffoldMessenger.of(context)
+        //                               ..removeCurrentSnackBar()
+        //                               ..showSnackBar(
+        //                                   SnackBar(content: Text('error: $e')));
+        //                           }
+        //                         }
+        //                 },
+        //                 title: 'Start Day',
+        //                 icon: Icon(Icons.man_rounded,
+        //                 color: Colors.white,
+        //                           size: 24 * ScaleSize.textScaleFactor(context)),
+        //               ),
+        //             ),
+        //             SizedBox(width: 10,),
+        //             Expanded(
+        //               child: CustomButtonComponent(
+        //                 onPressed: (){
+        //                   endDayValidation();
+        //                 },
+                         
+        //                 title: 'End Day',
+        //                 icon: Icon(
+        //                           Icons.airline_seat_recline_normal_rounded,
+        //                           color: Colors.white,
+        //                           size: 24 * ScaleSize.textScaleFactor(context)),
+        //               ),
+        //             ),
+
+
+
+        //             // Expanded(
+        //             //     child: TextButton.icon(
+        //             //         style: TextButton.styleFrom(
+        //             //             foregroundColor: Colors.amber[600]),
+        //             //         onPressed: () async {
+                              
+        //             //         },
+        //             //         icon: Icon(Icons.man_rounded,
+        //             //             size: 24 * ScaleSize.textScaleFactor(context)),
+        //             //         label: fdJamStartDay == ''
+        //             //             ? const Text('Start Day')
+        //             //             : Text(
+        //             //                 // 'Start Day\n$fdJamStartDay KM $fdKmStartDay',
+        //             //                 'Start Day\n$fdJamStartDay',
+        //             //                 style: TextStyle(
+        //             //                     fontSize: 10 *
+        //             //                         ScaleSize.textScaleFactor(context)),
+        //             //               ))),
+        //             // Expanded(
+        //             //     child: TextButton.icon(
+        //             //         style: TextButton.styleFrom(
+        //             //             foregroundColor: Colors.amber[600]),
+        //             //         onPressed: () {
+        //             //           endDayValidation();
+        //             //         },
+        //             //         icon: Icon(
+        //             //             Icons.airline_seat_recline_normal_rounded,
+        //             //             size: 24 * ScaleSize.textScaleFactor(context)),
+        //             //         label: fdJamEndDay == ''
+        //             //             ? const Text('End Day')
+        //             //             : Text(
+        //             //                 // 'End Day\n$fdJamEndDay KM $fdKmEndDay',
+        //             //                 'End Day\n$fdJamEndDay',
+        //             //                 style: TextStyle(
+        //             //                     fontSize: 10 *
+        //             //                         ScaleSize.textScaleFactor(context)),
+        //             //               ))),
+        //           ],
+        //         ),
+        //       )),
         floatingActionButton: isLoading
             ? const Padding(padding: EdgeInsets.zero)
             :
