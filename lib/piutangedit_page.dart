@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:crm_apps/new/helper/function_helper.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
 import 'collection_page.dart';
@@ -393,58 +394,50 @@ class LayerPiutangEditPage extends State<PiutangEditPage> {
   }
 
   void yesNoDialogForm(String imgPath, int index) {
-    showDialog<void>(
-      context: context,
-      builder: (BuildContext context) =>
-          StatefulBuilder(builder: (context, setState) {
-        return SimpleDialog(
-          title: Container(
-              color: css.titleDialogColor(),
-              padding: const EdgeInsets.all(5),
-              child: const Text('Lanjut hapus?')),
-          titlePadding: EdgeInsets.zero,
-          contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-          children: [
-            ElevatedButton(
-                onPressed: () async {
-                  try {
-                    await deleteImage(imgPath, index);
+    FunctionHelper.AlertDialogCip(
+      context,
+      DialogCip(
+        title: 'Hapus',
+        message: 'Lanjut hapus?',
+        onOk: () async {
+          try {
+            // 1. Eksekusi hapus file fisik
+            await deleteImage(imgPath, index);
 
-                    if (!mounted) return;
+            // 2. Cek mounted sebelum navigasi
+            if (!mounted) return;
 
-                    Navigator.pop(context);
+            // 3. Tutup dialog
+            Navigator.pop(context);
 
-                    setState(() {
-                      switch (index) {
-                        case 1:
-                          isImgExist1 = false;
-                          break;
-                        case 2:
-                          isImgExist2 = false;
-                          break;
-                        case 3:
-                          isImgExist3 = false;
-                          break;
-                        default:
-                          break;
-                      }
-                    });
+            // 4. Update state boolean untuk menyembunyikan widget gambar
+            setState(() {
+              switch (index) {
+                case 1:
+                  isImgExist1 = false;
+                  break;
+                case 2:
+                  isImgExist2 = false;
+                  break;
+                case 3:
+                  isImgExist3 = false;
+                  break;
+              }
+            });
 
-                    initLoadPage();
-                  } catch (e) {
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(SnackBar(content: Text('error: $e')));
-                  }
-                },
-                child: const Text('Ya')),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Tidak'))
-          ],
-        );
-      }),
+            // 5. Refresh data halaman
+            initLoadPage();
+
+          } catch (e) {
+            // Tangani error
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('error: $e')),
+              );
+            }
+          }
+        },
+      ),
     );
   }
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
+import 'package:crm_apps/new/helper/function_helper.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 // import 'package:crm_apps/stockrequestform_page.dart';
@@ -155,88 +156,84 @@ class LayerStockRequest extends State<StockRequestPage> {
   }
 
   void yesNoDialogForm(int index) {
-    showDialog<void>(
-      context: context,
-      builder: (BuildContext context) =>
-          StatefulBuilder(builder: (context, setState) {
-        return SimpleDialog(
-          title: Container(
-              color: css.titleDialogColor(),
-              padding: const EdgeInsets.all(5),
-              child: const Text('Lanjut hapus?')),
-          titlePadding: EdgeInsets.zero,
-          contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-          children: [
-            ElevatedButton(
-                onPressed: () async {
-                  try {
-                    List<mstk.Stock> listStock = [
-                      mstk.Stock(
-                        fdDepo: _liststockrequest[index].fdDepo,
-                        fdKodeLangganan:
-                            _liststockrequest[index].fdKodeLangganan,
-                        fdNoEntryStock: _liststockrequest[index].fdNoEntryStock,
-                        fdNoOrder: '',
-                        fdTanggal: _liststockrequest[index].fdTanggal,
-                        fdTotal: 0.0,
-                        fdTotalK: 0,
-                        fdTotalStock: 0,
-                        fdTotalStockK: 0,
-                        fdTanggalKirim: _liststockrequest[index].fdTanggalKirim,
-                        fdAlamatKirim: _liststockrequest[index].fdAlamatKirim,
-                        fdKodeGudang: _liststockrequest[index].fdKodeGudang,
-                        fdKodeGudangSF: _liststockrequest[index].fdKodeGudangSF,
-                        fdJenisSatuan: '',
-                        fdQtyStock: _liststockrequest[index].fdQtyStock,
-                        fdQtyStockK: _liststockrequest[index].fdQtyStockK,
-                        fdUnitPrice: 0,
-                        fdUnitPriceK: 0,
-                        fdDiscount: 0,
-                        fdKodeStatus: 0,
-                        fdStatusSent: 0,
-                        fdNoEntryOrder: '',
-                        fdNoEntrySJ: '',
-                        fdLastUpdate: '',
-                      )
-                    ];
+    FunctionHelper.AlertDialogCip(
+      context,
+      DialogCip(
+        title: 'Hapus',
+        message: 'Lanjut hapus?',
+        onOk: () async {
+          try {
+            // 1. Siapkan data Stock yang akan dihapus
+            List<mstk.Stock> listStock = [
+              mstk.Stock(
+                fdDepo: _liststockrequest[index].fdDepo,
+                fdKodeLangganan: _liststockrequest[index].fdKodeLangganan,
+                fdNoEntryStock: _liststockrequest[index].fdNoEntryStock,
+                fdNoOrder: '',
+                fdTanggal: _liststockrequest[index].fdTanggal,
+                fdTotal: 0.0,
+                fdTotalK: 0,
+                fdTotalStock: 0,
+                fdTotalStockK: 0,
+                fdTanggalKirim: _liststockrequest[index].fdTanggalKirim,
+                fdAlamatKirim: _liststockrequest[index].fdAlamatKirim,
+                fdKodeGudang: _liststockrequest[index].fdKodeGudang,
+                fdKodeGudangSF: _liststockrequest[index].fdKodeGudangSF,
+                fdJenisSatuan: '',
+                fdQtyStock: _liststockrequest[index].fdQtyStock,
+                fdQtyStockK: _liststockrequest[index].fdQtyStockK,
+                fdUnitPrice: 0,
+                fdUnitPriceK: 0,
+                fdDiscount: 0,
+                fdKodeStatus: 0,
+                fdStatusSent: 0,
+                fdNoEntryOrder: '',
+                fdNoEntrySJ: '',
+                fdLastUpdate: '',
+              )
+            ];
 
-                    mstk.StockApi result = await capi.sendStockRequesttoServer(
-                        widget.user,
-                        '2',
-                        widget.startDayDate,
-                        listStock,
-                        listStockItem);
+            // 2. Kirim perintah hapus ke server (parameter '2')
+            mstk.StockApi result = await capi.sendStockRequesttoServer(
+              widget.user,
+              '2',
+              widget.startDayDate,
+              listStock,
+              listStockItem,
+            );
 
-                    if (result.fdData != '0' &&
-                        result.fdData != '401' &&
-                        result.fdData != '500') {
-                      initLoadPage();
-                      if (!mounted) return;
+            // 3. Validasi respon server
+            if (result.fdData != '0' &&
+                result.fdData != '401' &&
+                result.fdData != '500') {
+              
+              initLoadPage();
+              
+              if (!mounted) return;
+              Navigator.pop(context); // Tutup dialog jika sukses
+              
+            } else if (result.fdMessage!.isNotEmpty) {
+              // Jika gagal, hentikan loading state di page utama
+              setState(() {
+                isLoading = false;
+              });
 
-                      Navigator.pop(context);
-                    } else if (result.fdMessage!.isNotEmpty) {
-                      setState(() {
-                        isLoading = false;
-                      });
-                      if (!mounted) return;
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(result.fdMessage!)));
-                    }
-                  } catch (e) {
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(SnackBar(content: Text('error: $e')));
-                  }
-                },
-                child: const Text('Ya')),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Tidak'))
-          ],
-        );
-      }),
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(result.fdMessage!)));
+              }
+              
+              // Opsional: Tutup dialog meskipun gagal agar user bisa mencoba lagi
+              if (mounted) Navigator.pop(context);
+            }
+          } catch (e) {
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('error: $e')));
+            }
+          }
+        },
+      ),
     );
   }
 

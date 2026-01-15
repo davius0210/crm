@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:crm_apps/new/helper/function_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -325,21 +326,10 @@ class LayerBackup extends State<BackupPage> {
   }
 
   void deleteDialogForm(String nmFile) {
-    showDialog<void>(
-      context: context,
-      builder: (BuildContext context) =>
-          StatefulBuilder(builder: (context, setState) {
-        return SimpleDialog(
-          title: Container(
-              color: css.titleDialogColor(),
-              padding: const EdgeInsets.all(5),
-              child: const Text('Lanjut hapus?')),
-          titlePadding: EdgeInsets.zero,
-          contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-          children: [
-            ElevatedButton(
-                onPressed: () async {
-                  try {
+    FunctionHelper.AlertDialogCip(context, DialogCip(title: 'Hapus',
+      message: 'Lanjut hapus?',
+      onOk: ()async{
+        try {
                     await deleteBackup(nmFile);
 
                     if (!mounted) return;
@@ -353,17 +343,8 @@ class LayerBackup extends State<BackupPage> {
                     ScaffoldMessenger.of(context)
                         .showSnackBar(SnackBar(content: Text('error: $e')));
                   }
-                },
-                child: const Text('Ya')),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Tidak'))
-          ],
-        );
-      }),
-    );
+      }
+    ));
   }
 
   @override

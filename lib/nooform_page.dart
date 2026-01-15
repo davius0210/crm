@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:crm_apps/new/component/custom_button_component.dart';
 import 'package:crm_apps/new/helper/color_helper.dart';
+import 'package:crm_apps/new/helper/function_helper.dart';
 import 'package:device_info_ce/device_info_ce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -348,70 +349,62 @@ class LayerNOOSave extends State<NooFormPage> {
   }
 
   void yesNoDialogForm(String imgPath, int index) {
-    showDialog<void>(
-      context: context,
-      builder: (BuildContext context) =>
-          StatefulBuilder(builder: (context, setState) {
-        return SimpleDialog(
-          title: Container(
-              color: css.titleDialogColor(),
-              padding: const EdgeInsets.all(5),
-              child: const Text('Lanjut hapus?')),
-          titlePadding: EdgeInsets.zero,
-          contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-          children: [
-            ElevatedButton(
-                onPressed: () async {
-                  try {
-                    await deleteImage(imgPath, index);
+    FunctionHelper.AlertDialogCip(
+      context,
+      DialogCip(
+        title: 'Hapus',
+        message: 'Lanjut hapus?',
+        onOk: () async {
+          try {
+            // 1. Jalankan fungsi hapus gambar
+            await deleteImage(imgPath, index);
 
-                    if (!mounted) return;
+            // 2. Cek apakah widget masih terpasang (safety check)
+            if (!mounted) return;
 
-                    Navigator.pop(context);
+            // 3. Tutup dialog
+            Navigator.pop(context);
 
-                    setState(() {
-                      switch (index) {
-                        case 1:
-                          isExistTokoLuar1 = false;
-                          break;
-                        case 2:
-                          isExistNpwp = false;
-                          break;
-                        case 3:
-                          isExistTokoDalam1 = false;
-                          break;
-                        case 4:
-                          isExistKtp = false;
-                          break;
-                        case 5:
-                          isExistNib = false;
-                          break;
-                        case 6:
-                          isExistSkp = false;
-                          break;
-                        case 7:
-                          isExistSpesimen = false;
-                          break;
-                        default:
-                          break;
-                      }
-                    });
+            // 4. Update state berdasarkan index dokumen yang dihapus
+            setState(() {
+              switch (index) {
+                case 1:
+                  isExistTokoLuar1 = false;
+                  break;
+                case 2:
+                  isExistNpwp = false;
+                  break;
+                case 3:
+                  isExistTokoDalam1 = false;
+                  break;
+                case 4:
+                  isExistKtp = false;
+                  break;
+                case 5:
+                  isExistNib = false;
+                  break;
+                case 6:
+                  isExistSkp = false;
+                  break;
+                case 7:
+                  isExistSpesimen = false;
+                  break;
+                default:
+                  break;
+              }
+            });
 
-                    initLoadPage();
-                  } catch (e) {
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(SnackBar(content: Text('error: $e')));
-                  }
-                },
-                child: const Text('Ya')),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Tidak'))
-          ],
-        );
-      }),
+            // 5. Refresh data halaman
+            initLoadPage();
+            
+          } catch (e) {
+            // Tampilkan pesan error jika gagal
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('error: $e')),
+            );
+          }
+        },
+      ),
     );
   }
 

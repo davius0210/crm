@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:crm_apps/new/helper/color_helper.dart';
+import 'package:crm_apps/new/helper/function_helper.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as cpath;
@@ -134,60 +135,61 @@ class LayerRencanaRutePage extends State<RencanaRutePage> {
   }
 
   void yesNoDialogForm(String fdNoRencanaRute) {
-    showDialog<void>(
-      context: context,
-      builder: (BuildContext context) =>
-          StatefulBuilder(builder: (context, setState) {
-        return SimpleDialog(
-          title: Container(
-              color: css.titleDialogColor(),
-              padding: const EdgeInsets.all(5),
-              child: const Text('Lanjut hapus?')),
-          titlePadding: EdgeInsets.zero,
-          contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-          children: [
-            ElevatedButton(
-                onPressed: () async {
-                  try {
-                    List<mrrute.RencanaRuteApi> listRencanaRuteApi = await crute
-                        .getDataDeleteRencanaRuteApi(fdNoRencanaRute);
-                    mrrute.RencanaRuteApi result =
-                        await capi.sendRencanaRutetoServer(widget.user, '2',
-                            widget.startDayDate, listRencanaRuteApi);
+    FunctionHelper.AlertDialogCip(
+      context,
+      DialogCip(
+        title: 'Hapus',
+        message: 'Lanjut hapus?',
+        onOk: () async {
+          try {
+            // 1. Ambil data rute yang akan dihapus dari database lokal
+            List<mrrute.RencanaRuteApi> listRencanaRuteApi = 
+                await crute.getDataDeleteRencanaRuteApi(fdNoRencanaRute);
 
-                    if (result.fdData != '0' &&
-                        result.fdData != '401' &&
-                        result.fdData != '500' &&
-                        result.fdMessage == '') {
-                      await crute.deleteRencanaRuteBatch(fdNoRencanaRute);
-                      initLoadPage();
-                      if (!mounted) return;
-                    } else if (result.fdMessage!.isNotEmpty) {
-                      setState(() {
-                        isLoading = false;
-                      });
-                      if (!mounted) return;
+            // 2. Kirim perintah hapus ke Server
+            mrrute.RencanaRuteApi result = await capi.sendRencanaRutetoServer(
+              widget.user, 
+              '2', // Parameter '2' biasanya untuk DELETE
+              widget.startDayDate, 
+              listRencanaRuteApi,
+            );
 
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(result.fdMessage!)));
-                    }
-                    if (!mounted) return;
+            // 3. Validasi Respons API
+            if (result.fdData != '0' &&
+                result.fdData != '401' &&
+                result.fdData != '500' &&
+                result.fdMessage == '') {
+              
+              // Jika sukses di server, hapus di database lokal
+              await crute.deleteRencanaRuteBatch(fdNoRencanaRute);
+              initLoadPage();
+              
+            } else if (result.fdMessage!.isNotEmpty) {
+              // Jika server menolak/error
+              setState(() {
+                isLoading = false;
+              });
 
-                    Navigator.pop(context);
-                  } catch (e) {
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(SnackBar(content: Text('error: $e')));
-                  }
-                },
-                child: const Text('Ya')),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Tidak'))
-          ],
-        );
-      }),
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(result.fdMessage!)));
+              }
+            }
+
+            // 4. Tutup Dialog
+            if (!mounted) return;
+            Navigator.pop(context);
+
+          } catch (e) {
+            // Handle error koneksi atau runtime
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('error: $e')),
+              );
+            }
+          }
+        },
+      ),
     );
   }
 

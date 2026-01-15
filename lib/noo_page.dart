@@ -1,3 +1,4 @@
+import 'package:crm_apps/new/helper/function_helper.dart';
 import 'package:flutter/material.dart';
 import 'nooform_page.dart';
 import 'nooedit_page.dart';
@@ -161,86 +162,78 @@ class LayerNOO extends State<NOOPage> {
   }
 
   void yesNoDialogForm(int index) {
-    showDialog<void>(
-      context: context,
-      builder: (BuildContext context) =>
-          StatefulBuilder(builder: (context, setState) {
-        return SimpleDialog(
-          title: Container(
-              color: css.titleDialogColor(),
-              padding: const EdgeInsets.all(5),
-              child: const Text('Lanjut hapus data langganan?')),
-          titlePadding: EdgeInsets.zero,
-          contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-          children: [
-            ElevatedButton(
-                onPressed: () async {
-                  try {
-                    stateDelete = await cnoo.deleteByNoEntry(
-                        widget.user.fdToken, _listNOO[index].fdKodeNoo!);
-                    if (stateDelete == 1) {
-                      initLoadPage();
-                    }
+      FunctionHelper.AlertDialogCip(
+        context,
+        DialogCip(
+          title: 'Hapus',
+          message: 'Lanjut hapus data langganan?',
+          onOk: () async {
+            try {
+              // 1. Eksekusi proses penghapusan data NOO via API/Database
+              stateDelete = await cnoo.deleteByNoEntry(
+                widget.user.fdToken, 
+                _listNOO[index].fdKodeNoo!,
+              );
 
-                    if (!mounted) return;
+              // 2. Jika berhasil (state == 1), refresh halaman
+              if (stateDelete == 1) {
+                initLoadPage();
+              }
 
-                    Navigator.pop(context);
-                  } catch (e) {
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(SnackBar(content: Text('error: $e')));
-                  }
-                },
-                child: const Text('Ya')),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Tidak'))
-          ],
-        );
-      }),
-    );
+              // 3. Safety check mounted sebelum navigasi
+              if (!mounted) return;
+
+              // 4. Tutup Dialog
+              Navigator.pop(context);
+              
+            } catch (e) {
+              // Handle error dengan SnackBar
+              if (mounted) {
+                ScaffoldMessenger.of(context)
+                  ..removeCurrentSnackBar()
+                  ..showSnackBar(SnackBar(content: Text('error: $e')));
+              }
+            }
+          },
+        ),
+      );
   }
 
   void yesNoDialogFormOrder(String fdNoEntryOrder) {
-    showDialog<void>(
-      context: context,
-      builder: (BuildContext context) =>
-          StatefulBuilder(builder: (context, setState) {
-        return SimpleDialog(
-          title: Container(
-              color: css.titleDialogColor(),
-              padding: const EdgeInsets.all(5),
-              child: const Text('Lanjut hapus data order?')),
-          titlePadding: EdgeInsets.zero,
-          contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-          children: [
-            ElevatedButton(
-                onPressed: () async {
-                  try {
-                    stateDelete = await codr.deleteByNoEntry(
-                        widget.user.fdToken, fdNoEntryOrder);
-                    if (stateDelete == 1) {
-                      initLoadPage();
-                    }
+    FunctionHelper.AlertDialogCip(
+      context,
+      DialogCip(
+        title: 'Hapus',
+        message: 'Lanjut hapus data order?',
+        onOk: () async {
+          try {
+            // 1. Eksekusi proses penghapusan data order
+            stateDelete = await codr.deleteByNoEntry(
+              widget.user.fdToken, 
+              fdNoEntryOrder,
+            );
 
-                    if (!mounted) return;
+            // 2. Jika berhasil dihapus (state == 1), refresh data halaman
+            if (stateDelete == 1) {
+              initLoadPage();
+            }
 
-                    Navigator.pop(context);
-                  } catch (e) {
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(SnackBar(content: Text('error: $e')));
-                  }
-                },
-                child: const Text('Ya')),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Tidak'))
-          ],
-        );
-      }),
+            // 3. Safety check untuk memastikan widget masih terpasang
+            if (!mounted) return;
+
+            // 4. Tutup dialog
+            Navigator.pop(context);
+
+          } catch (e) {
+            // Handle error dengan SnackBar
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('error: $e')),
+              );
+            }
+          }
+        },
+      ),
     );
   }
 

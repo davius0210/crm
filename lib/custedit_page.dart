@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:crm_apps/new/helper/function_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -301,68 +302,58 @@ class LayerCustEdit extends State<CustEditPage> {
   }
 
   void yesNoDialogForm(String imgPath, int index) {
-    showDialog<void>(
-      context: context,
-      builder: (BuildContext context) =>
-          StatefulBuilder(builder: (context, setState) {
-        return SimpleDialog(
-          title: Container(
-              color: css.titleDialogColor(),
-              padding: const EdgeInsets.all(5),
-              child: const Text('Lanjut hapus?')),
-          titlePadding: const EdgeInsets.all(5),
-          contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-          children: [
-            ElevatedButton(
-                onPressed: () async {
-                  try {
-                    await deleteImage(imgPath, index);
+    FunctionHelper.AlertDialogCip(
+      context,
+      DialogCip(
+        title: 'Hapus',
+        message: 'Lanjut hapus?',
+        onOk: () async {
+          try {
+            // 1. Eksekusi proses hapus file gambar
+            await deleteImage(imgPath, index);
 
-                    if (!mounted) return;
-                    Navigator.pop(context);
+            // 2. Safety check mounted sebelum Navigator
+            if (!mounted) return;
+            
+            // 3. Tutup dialog
+            Navigator.pop(context);
 
-                    setState(() {
-                      switch (index) {
-                        case 1:
-                          isExistTokoLuar1 = false;
+            // 4. Update state sesuai dengan jenis gambar yang dihapus
+            setState(() {
+              switch (index) {
+                case 1:
+                  isExistTokoLuar1 = false;
+                  isLoadTokoLuar1 = false;
+                  break;
+                case 2:
+                  isExistNPWP = false;
+                  isLoadNpwp = false;
+                  break;
+                case 3:
+                  isExistTokoDalam1 = false;
+                  isLoadTokoDalam1 = false;
+                  break;
+                case 4:
+                  isExistKTP = false;
+                  isLoadKtp = false;
+                  break;
+                default:
+                  break;
+              }
+            });
 
-                          isLoadTokoLuar1 = false;
-                          break;
-                        case 2:
-                          isExistNPWP = false;
-                          isLoadNpwp = false;
-                          break;
-                        case 3:
-                          isExistTokoDalam1 = false;
-                          isLoadTokoDalam1 = false;
-                          break;
-                        case 4:
-                          isExistKTP = false;
-                          isLoadKtp = false;
-                          break;
-                        default:
-                          break;
-                      }
-                    });
-
-                    // initLoadPage();
-                  } catch (e) {
-                    if (mounted) {
-                      ScaffoldMessenger.of(context)
-                        ..removeCurrentSnackBar()
-                        ..showSnackBar(SnackBar(content: Text('error: $e')));
-                    }
-                  }
-                },
-                child: const Text('Ya')),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Tidak'))
-          ],
-        );
-      }),
+            // 5. Panggil initLoadPage jika diperlukan
+            // initLoadPage();
+            
+          } catch (e) {
+            if (mounted) {
+              ScaffoldMessenger.of(context)
+                ..removeCurrentSnackBar()
+                ..showSnackBar(SnackBar(content: Text('error: $e')));
+            }
+          }
+        },
+      ),
     );
   }
 

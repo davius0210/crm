@@ -5,6 +5,7 @@
 // 4. Icon collection masih di customer page, perlu dipindah ke invoice sesuai URD
 
 import 'dart:io';
+import 'package:crm_apps/new/helper/function_helper.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'previewphoto_page.dart';
@@ -829,47 +830,38 @@ class LayerCollectionEditPage extends State<CollectionEditPage> {
   }
 
   void yesNoDialogForm(String imgPath) {
-    showDialog<void>(
-      context: context,
-      builder: (BuildContext context) =>
-          StatefulBuilder(builder: (context, setState) {
-        return SimpleDialog(
-          title: Container(
-              color: css.titleDialogColor(),
-              padding: const EdgeInsets.all(5),
-              child: const Text('Lanjut hapus?')),
-          titlePadding: EdgeInsets.zero,
-          contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-          children: [
-            ElevatedButton(
-                onPressed: () async {
-                  try {
-                    await deleteImage(imgPath);
+    FunctionHelper.AlertDialogCip(
+      context,
+      DialogCip(
+        title: 'Hapus',
+        message: 'Lanjut hapus?',
+        onOk: () async {
+          try {
+            // 1. Eksekusi proses hapus file gambar
+            await deleteImage(imgPath);
 
-                    if (!mounted) return;
-                    Navigator.pop(context);
+            // 2. Safety check mounted sebelum Navigator
+            if (!mounted) return;
 
-                    setState(() {
-                      isImgExist = false;
-                      isLoadingImg = false;
-                    });
-                  } catch (e) {
-                    if (mounted) {
-                      ScaffoldMessenger.of(context)
-                        ..removeCurrentSnackBar()
-                        ..showSnackBar(SnackBar(content: Text('error: $e')));
-                    }
-                  }
-                },
-                child: const Text('Ya')),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Tidak'))
-          ],
-        );
-      }),
+            // 3. Tutup dialog
+            Navigator.pop(context);
+
+            // 4. Update state lokal untuk menghilangkan tampilan gambar
+            setState(() {
+              isImgExist = false;
+              isLoadingImg = false;
+            });
+            
+          } catch (e) {
+            // Handle error dengan SnackBar
+            if (mounted) {
+              ScaffoldMessenger.of(context)
+                ..removeCurrentSnackBar()
+                ..showSnackBar(SnackBar(content: Text('error: $e')));
+            }
+          }
+        },
+      ),
     );
   }
 

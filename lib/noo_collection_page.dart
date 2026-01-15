@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:crm_apps/new/helper/function_helper.dart';
+
 import 'noo_collectionallocate_page.dart';
 
 import 'noo_collectionedit_page.dart';
@@ -127,63 +129,53 @@ class LayerCollection extends State<NooCollectionPage> {
   }
 
   void yesNoDialogForm(int index) {
-    showDialog<void>(
-      context: context,
-      builder: (BuildContext context) =>
-          StatefulBuilder(builder: (context, setState) {
-        return SimpleDialog(
-          title: Container(
-              color: css.titleDialogColor(),
-              padding: const EdgeInsets.all(5),
-              child: const Text('Lanjut hapus?')),
-          titlePadding: EdgeInsets.zero,
-          contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-          children: [
-            ElevatedButton(
-                onPressed: () async {
-                  try {
-                    stateDelete = await ccoll.deleteCollection(
-                        _listCollection[index].fdId, widget.lgn.fdKodeNoo!);
+    FunctionHelper.AlertDialogCip(
+      context,
+      DialogCip(
+        title: 'Hapus',
+        message: 'Lanjut hapus?',
+        onOk: () async {
+          try {
+            // 1. Eksekusi hapus data collection berdasarkan ID dan Kode NOO
+            stateDelete = await ccoll.deleteCollection(
+              _listCollection[index].fdId,
+              widget.lgn.fdKodeNoo!,
+            );
 
-                    // delete image
-                    if (stateDelete > 0) {
-                      await File(_listCollection[index].fdBuktiImg)
-                          .exists()
-                          .then((isExist) async {
-                        if (isExist) {
-                          await File(_listCollection[index].fdBuktiImg)
-                              .delete();
-                        }
-                      });
-                    }
+            // 2. Jika data di database berhasil dihapus, hapus file fisik fotonya
+            if (stateDelete > 0) {
+              final fileBukti = File(_listCollection[index].fdBuktiImg);
+              if (await fileBukti.exists()) {
+                await fileBukti.delete();
+              }
+            }
 
-                    if (!mounted) return;
+            // 3. Safety check mounted sebelum update UI
+            if (!mounted) return;
 
-                    if (stateDelete == 1) {
-                      initLoadPage();
-                    } else {
-                      ScaffoldMessenger.of(context)
-                        ..removeCurrentSnackBar()
-                        ..showSnackBar(const SnackBar(
-                            content: Text('Gagal menghapus data. Coba lagi')));
-                    }
+            // 4. Tutup dialog
+            Navigator.pop(context);
 
-                    Navigator.pop(context);
-                  } catch (e) {
-                    ScaffoldMessenger.of(context)
-                      ..removeCurrentSnackBar()
-                      ..showSnackBar(SnackBar(content: Text('error: $e')));
-                  }
-                },
-                child: const Text('Ya')),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Tidak'))
-          ],
-        );
-      }),
+            // 5. Feedback hasil eksekusi
+            if (stateDelete == 1) {
+              initLoadPage();
+            } else {
+              ScaffoldMessenger.of(context)
+                ..removeCurrentSnackBar()
+                ..showSnackBar(const SnackBar(
+                    content: Text('Gagal menghapus data. Coba lagi')));
+            }
+            
+          } catch (e) {
+            // Handle error tak terduga
+            if (mounted) {
+              ScaffoldMessenger.of(context)
+                ..removeCurrentSnackBar()
+                ..showSnackBar(SnackBar(content: Text('error: $e')));
+            }
+          }
+        },
+      ),
     );
   }
 

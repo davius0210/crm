@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:crm_apps/new/helper/function_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'main.dart';
@@ -318,71 +319,62 @@ class LayerNOOEdit extends State<NOOEditPage> {
   }
 
   void yesNoDialogForm(String imgPath, int index) {
-    showDialog<void>(
-      context: context,
-      builder: (BuildContext context) =>
-          StatefulBuilder(builder: (context, setState) {
-        return SimpleDialog(
-          title: Container(
-              color: css.titleDialogColor(),
-              padding: const EdgeInsets.all(5),
-              child: const Text('Lanjut hapus?')),
-          titlePadding: const EdgeInsets.all(5),
-          contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-          children: [
-            ElevatedButton(
-                onPressed: () async {
-                  try {
-                    await deleteImage(imgPath, index);
+    FunctionHelper.AlertDialogCip(
+      context,
+      DialogCip(
+        title: 'Hapus',
+        message: 'Lanjut hapus?',
+        onOk: () async {
+          try {
+            // 1. Proses hapus file gambar berdasarkan path dan index
+            await deleteImage(imgPath, index);
 
-                    Navigator.pop(context);
+            // 2. Tutup dialog segera setelah proses hapus selesai
+            if (!mounted) return;
+            Navigator.pop(context);
 
-                    setState(() {
-                      switch (index) {
-                        case 1:
-                          isExistTokoLuar1 = false;
-                          break;
-                        case 2:
-                          isExistNPWP = false;
-                          break;
-                        case 3:
-                          isExistTokoDalam1 = false;
-                          break;
-                        case 4:
-                          isExistKTP = false;
-                          break;
-                        case 5:
-                          isExistNib = false;
-                          break;
-                        case 6:
-                          isExistSkp = false;
-                          break;
-                        case 7:
-                          isExistSpesimen = false;
-                          break;
-                        default:
-                          break;
-                      }
-                    });
+            // 3. Update state spesifik berdasarkan index yang dipilih
+            setState(() {
+              switch (index) {
+                case 1:
+                  isExistTokoLuar1 = false;
+                  break;
+                case 2:
+                  isExistNPWP = false;
+                  break;
+                case 3:
+                  isExistTokoDalam1 = false;
+                  break;
+                case 4:
+                  isExistKTP = false;
+                  break;
+                case 5:
+                  isExistNib = false;
+                  break;
+                case 6:
+                  isExistSkp = false;
+                  break;
+                case 7:
+                  isExistSpesimen = false;
+                  break;
+                default:
+                  break;
+              }
+            });
 
-                    initLoadPage();
-                  } catch (e) {
-                    if (mounted) {
-                      ScaffoldMessenger.of(context)
-                        ..removeCurrentSnackBar()
-                        ..showSnackBar(SnackBar(content: Text('error: $e')));
-                    }
-                  }
-                },
-                child: const Text('Ya')),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Tidak'))
-          ],
-        );
-      }),
+            // 4. Refresh data halaman
+            initLoadPage();
+
+          } catch (e) {
+            // Handle error jika proses gagal
+            if (mounted) {
+              ScaffoldMessenger.of(context)
+                ..removeCurrentSnackBar()
+                ..showSnackBar(SnackBar(content: Text('error: $e')));
+            }
+          }
+        },
+      ),
     );
   }
 

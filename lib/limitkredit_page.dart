@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:crm_apps/limitkreditform_page.dart';
 import 'package:crm_apps/limitkreditedit_page.dart';
 import 'package:airplane_mode_checker/airplane_mode_checker.dart';
+import 'package:crm_apps/new/helper/function_helper.dart';
 // import 'package:battery_info/battery_info_plugin.dart';
 import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart';
@@ -221,44 +222,37 @@ class LayerLimitKredit extends State<LimitKreditPage> {
   }
 
   void yesNoDialogForm(String fdNoLimitKredit) {
-    showDialog<void>(
-      context: context,
-      builder: (BuildContext context) =>
-          StatefulBuilder(builder: (context, setState) {
-        return SimpleDialog(
-          title: Container(
-              color: css.titleDialogColor(),
-              padding: const EdgeInsets.all(5),
-              child: const Text('Lanjut hapus?')),
-          titlePadding: EdgeInsets.zero,
-          contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-          children: [
-            ElevatedButton(
-                onPressed: () async {
-                  try {
-                    stateDelete = await clk.deleteByNoEntry(fdNoLimitKredit);
-                    if (stateDelete == 1) {
-                      initLoadPage();
-                    }
+    FunctionHelper.AlertDialogCip(
+      context,
+      DialogCip(
+        title: 'Hapus',
+        message: 'Lanjut hapus?',
+        onOk: () async {
+          try {
+            // 1. Eksekusi proses hapus data Limit Kredit
+            stateDelete = await clk.deleteByNoEntry(fdNoLimitKredit);
 
-                    if (!mounted) return;
+            // 2. Jika berhasil dihapus (state == 1), refresh halaman
+            if (stateDelete == 1) {
+              initLoadPage();
+            }
 
-                    Navigator.pop(context);
-                  } catch (e) {
-                    ScaffoldMessenger.of(context)
-                      ..removeCurrentSnackBar()
-                      ..showSnackBar(SnackBar(content: Text('error: $e')));
-                  }
-                },
-                child: const Text('Ya')),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Tidak'))
-          ],
-        );
-      }),
+            // 3. Safety check mounted sebelum Navigator
+            if (!mounted) return;
+
+            // 4. Tutup dialog
+            Navigator.pop(context);
+            
+          } catch (e) {
+            // Handle error dengan SnackBar
+            if (mounted) {
+              ScaffoldMessenger.of(context)
+                ..removeCurrentSnackBar()
+                ..showSnackBar(SnackBar(content: Text('error: $e')));
+            }
+          }
+        },
+      ),
     );
   }
 

@@ -1,3 +1,4 @@
+import 'package:crm_apps/new/helper/function_helper.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
@@ -97,44 +98,40 @@ class LayerPiutangPage extends State<PiutangPage> {
   }
 
   void yesNoDialogForm(int index) {
-    showDialog<void>(
-      context: context,
-      builder: (BuildContext context) =>
-          StatefulBuilder(builder: (context, setState) {
-        return SimpleDialog(
-          title: Container(
-              color: css.titleDialogColor(),
-              padding: const EdgeInsets.all(5),
-              child: const Text('Lanjut hapus?')),
-          titlePadding: EdgeInsets.zero,
-          contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-          children: [
-            ElevatedButton(
-                onPressed: () async {
-                  try {
-                    stateDelete = await cpiu.deleteByNoEntry(
-                        widget.user.fdToken, listPiutang[index].fdNoFaktur!);
-                    if (stateDelete == 1) {
-                      initLoadPage();
-                    }
+    FunctionHelper.AlertDialogCip(
+      context,
+      DialogCip(
+        title: 'Hapus',
+        message: 'Lanjut hapus?',
+        onOk: () async {
+          try {
+            // 1. Eksekusi penghapusan piutang berdasarkan token dan nomor faktur
+            stateDelete = await cpiu.deleteByNoEntry(
+              widget.user.fdToken, 
+              listPiutang[index].fdNoFaktur!,
+            );
 
-                    if (!mounted) return;
+            // 2. Jika berhasil dihapus (state 1), refresh data pada halaman
+            if (stateDelete == 1) {
+              initLoadPage();
+            }
 
-                    Navigator.pop(context);
-                  } catch (e) {
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(SnackBar(content: Text('error: $e')));
-                  }
-                },
-                child: const Text('Ya')),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Tidak'))
-          ],
-        );
-      }),
+            // 3. Safety check untuk memastikan widget masih terpasang
+            if (!mounted) return;
+
+            // 4. Tutup dialog
+            Navigator.pop(context);
+            
+          } catch (e) {
+            // Handle error dengan SnackBar
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('error: $e')),
+              );
+            }
+          }
+        },
+      ),
     );
   }
 
