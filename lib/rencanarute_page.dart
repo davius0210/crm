@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:crm_apps/new/helper/color_helper.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as cpath;
@@ -383,11 +384,9 @@ class LayerRencanaRutePage extends State<RencanaRutePage> {
             ])),
         bottomNavigationBar: isLoading
             ? Center(child: loadingProgress(ScaleSize.textScaleFactor(context)))
-            : BottomAppBar(
-                height: 40 * ScaleSize.textScaleFactor(context),
-                child: TextButton(
-                  onPressed: () async {
-                    if (formInputKey.currentState!.validate()) {
+            : InkWell(
+              onTap: ()async{
+                if (formInputKey.currentState!.validate()) {
                       if (strStartDate.isEmpty || strEndDate.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -498,10 +497,23 @@ class LayerRencanaRutePage extends State<RencanaRutePage> {
                         }
                       }
                     }
-                  },
-                  child: const Text('Apply'),
+              },
+              child: Ink(
+                height: 70,
+                color: ColorHelper.primary,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text('Apply', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),),
+                    SizedBox(width: 5,),
+                    Icon(Icons.check_circle, color: Colors.white,)
+                  ],
                 ),
               ),
+            )
+            
+            
       ),
     );
   }

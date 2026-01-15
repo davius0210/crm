@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
+import 'package:crm_apps/new/helper/color_helper.dart';
+import 'package:crm_apps/new/helper/function_helper.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:airplane_mode_checker/airplane_mode_checker.dart';
@@ -151,28 +153,11 @@ class Layerstockunloading extends State<StockUnloadingPage> {
   }
 
   void yesNoDialogForm(int index) {
-    showDialog<void>(
-      context: context,
-      builder: (BuildContext context) =>
-          StatefulBuilder(builder: (context, setState) {
-        return SimpleDialog(
-          title: Container(
-              color: css.titleDialogColorGreen(),
-              padding: const EdgeInsets.all(16),
-              child: const Text('Konfirmasi Unloading Stock')),
-          titlePadding: EdgeInsets.zero,
-          contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-          children: [
-            const Padding(padding: EdgeInsets.all(5)),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              color: Colors.white,
-              child: const Padding(
-                  padding: EdgeInsets.all(5), child: Text('Proses Unloading?')),
-            ),
-            ElevatedButton(
-                onPressed: () async {
-                  try {
+    FunctionHelper.AlertDialogCip(context, DialogCip(title: 'Unloading Stock',
+      message: 'Apakah anda ingin proses Unloading?',
+      ok: 'Proses',
+      onOk: ()async{
+        try {
                     if (_liststockunloadingPending.isNotEmpty) {
                       // List<mstk.StockApi> stockApiList = [
                       //   mstk.StockApi(
@@ -315,18 +300,9 @@ class Layerstockunloading extends State<StockUnloadingPage> {
                     ScaffoldMessenger.of(context)
                         .showSnackBar(SnackBar(content: Text('error: $e')));
                   }
-                },
-                child: const Text('Ya')),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Tidak')),
-            const Padding(padding: EdgeInsets.all(5)),
-          ],
-        );
-      }),
-    );
+      }
+    ));
+    
   }
 
   @override
@@ -591,15 +567,27 @@ class Layerstockunloading extends State<StockUnloadingPage> {
       ),
       bottomNavigationBar: isLoading
           ? Center(child: loadingProgress(ScaleSize.textScaleFactor(context)))
-          : BottomAppBar(
-              height: 40 * ScaleSize.textScaleFactor(context),
-              child: TextButton(
-                onPressed: () async {
-                  yesNoDialogForm(0);
-                },
-                child: const Text('Unloading'),
+          : InkWell(
+            onTap: (){
+              yesNoDialogForm(0);
+            },
+            child: Ink(
+              height: 70,
+              color: ColorHelper.primary,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text('Unloading', style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold, fontSize: 16),),
+                  SizedBox(width: 5,),
+                  Icon(Icons.chevron_right, color: Colors.white,)
+                ],
               ),
             ),
+          )
+          
+          
+         
     );
   }
 }

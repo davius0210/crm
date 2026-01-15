@@ -6,7 +6,8 @@ class IconButtonComponent extends StatelessWidget {
   final Function()? onPressed;
   final Widget? child;
   final Color? color;
-  const IconButtonComponent({super.key, this.child, this.color, required this.label, this.onPressed});
+  final TextStyle? style;
+  const IconButtonComponent({super.key, this.child, this.color, required this.label, this.onPressed, this.style});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,7 @@ class IconButtonComponent extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 5),
                 child: CircleAvatar(child: child,backgroundColor: color ?? ColorHelper.primary,),
               ),
-              Text('$label', textAlign: TextAlign.center,)
+              Text('$label', textAlign: TextAlign.center,style: style,)
             ],
           ),
         ),

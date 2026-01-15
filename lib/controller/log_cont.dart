@@ -6,6 +6,8 @@ import '../models/globalparam.dart' as param;
 import '../models/logdevice.dart' as mlog;
 import '../models/database.dart' as mdbconfig;
 import 'package:path/path.dart' as cpath;
+Database? _db;
+Database? _dbLog;
 
 Future<void> createTblGpsLog() async {
   late Database db2;

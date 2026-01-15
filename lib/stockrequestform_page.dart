@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:crm_apps/new/component/custom_button_component.dart';
+import 'package:crm_apps/new/helper/color_helper.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as cpath;
@@ -679,12 +680,9 @@ class LayerStockRequestFormPage extends State<StockRequestFormPage> {
           ])),
       bottomNavigationBar: isLoading
           ? Center(child: loadingProgress(ScaleSize.textScaleFactor(context)))
-          : Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: CustomButtonComponent(
-              title: 'Next',
-              onPressed: ()async{
-                if (formInputKey.currentState!.validate()) {
+          : InkWell(
+            onTap: ()async{
+              if (formInputKey.currentState!.validate()) {
                       totalStockRequest = 0;
                       checkSave = await saveStockRequest();
                       if (isDecimal == 0) {
@@ -771,9 +769,118 @@ class LayerStockRequestFormPage extends State<StockRequestFormPage> {
                         }
                       }
                     }
-              },
+            },
+            child: Ink(
+              height: 70,
+              color: ColorHelper.primary,
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Next', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 16),),
+                    Icon(Icons.skip_next, color: Colors.white,)
+                  ],
+                ),
+              ),
             ),
           )
+          
+          
+          // Padding(
+          //   padding: const EdgeInsets.all(10.0),
+          //   child: CustomButtonComponent(
+          //     title: 'Next',
+          //     onPressed: ()async{
+          //       if (formInputKey.currentState!.validate()) {
+          //             totalStockRequest = 0;
+          //             checkSave = await saveStockRequest();
+          //             if (isDecimal == 0) {
+          //               // listKeranjang.sort(
+          //               //     (a, b) => a.fdKodeBarang.compareTo(b.fdKodeBarang));
+          //               listKeranjang.sort((a, b) {
+          //                 final kodeCompare =
+          //                     a.fdKodeBarang.compareTo(b.fdKodeBarang);
+          //                 if (kodeCompare != 0) {
+          //                   return kodeCompare;
+          //                 } else {
+          //                   return a.fdPromosi!.compareTo(b.fdPromosi!);
+          //                 }
+          //               });
+            
+          //               log('new listKeranjang: ${listKeranjang.map((item) => '(${item.fdKodeBarang}, ${item.fdNamaBarang}, Qty: ${item.fdQty}, Satuan: ${item.fdJenisSatuan}, promosi: ${item.fdPromosi})').toList()}');
+            
+          //               log('data: ${JsonBarangDiskon.map((item) => '(${item.fdDiscount} )').toList()}');
+          //               // if (JsonBarangDiskon.isEmpty) {
+          //               //   totalDiscount = 0;
+          //               // } else if (JsonBarangDiskon[0].message!.isNotEmpty) {
+          //               //   totalDiscount = 0;
+          //               //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          //               //     content: Text(
+          //               //       JsonBarangDiskon[0].message.toString(),
+          //               //     ),
+          //               //   ));
+          //               // } else {
+          //               //   totalDiscount =
+          //               //       JsonBarangDiskon.map((item) => item.fdDiscount)
+          //               //           .reduce((a, b) => a + b);
+          //               //   // Isi fdDiscountDetail pada listKeranjang dari JsonBarangDiskon
+          //               //   for (var keranjang in listKeranjang) {
+          //               //     final diskon = JsonBarangDiskon.firstWhere(
+          //               //       (d) => d.fdKodeBarang == keranjang.fdKodeBarang,
+          //               //       orElse: () => mbrg.JsonBarangDiskon(
+          //               //         fdKodeBarang: keranjang.fdKodeBarang,
+          //               //         fdDiscount: keranjang.fdDiscount ?? 0,
+          //               //         fdDiscountDetail: '',
+          //               //         fdQty: keranjang.fdQty ?? 0,
+          //               //         fdLastUpdate: DateTime.now().toIso8601String(),
+          //               //       ),
+          //               //     );
+          //               //     keranjang.fdDiscountDetail = diskon.fdDiscountDetail;
+          //               //     keranjang.fdDiscount = diskon.fdDiscount;
+          //               //   }
+          //               // }
+          //               // print(totalDiscount);
+          //               log('data: ${listKeranjang.map((item) => '(${item.fdKodeBarang}, ${item.fdNamaBarang}, promosi:${item.fdPromosi}, Qty: ${item.fdQty}, Satuan: ${item.fdJenisSatuan} ${item.fdNamaJenisSatuan} ${item.fdDiscount} ${item.fdDiscountDetail})').toList()}');
+            
+          //   //hitung total StockRequest
+            
+          //               // for (int index = 0;
+          //               //     index < listKeranjang.length;
+          //               //     index++) {
+          //               //   totalStockRequest += listKeranjang[index].fdTotalPrice!;
+          //               //   totalDiscount += 0;
+          //               // }
+            
+          //               if (checkSave) {
+          //                 Navigator.push(
+          //                         context,
+          //                         MaterialPageRoute(
+          //                             settings: const RouteSettings(
+          //                                 name: 'StockRequestSummaryForm'),
+          //                             builder: (context) => StockSummaryForm(
+          //                                 fdNoEntryStock:
+          //                                     widget.fdNoEntryStockRequest,
+          //                                 user: widget.user,
+          //                                 totalStockRequest: totalStockRequest,
+          //                                 totalDiscount: totalDiscount,
+          //                                 listKeranjang: listKeranjang,
+          //                                 isEndDay: widget.isEndDay,
+          //                                 routeName: 'StockRequestCartForm',
+          //                                 startDayDate: widget.startDayDate)))
+          //                     .then((value) {
+          //                   initLoadPage();
+            
+          //                   setState(() {});
+          //                   print(listKeranjang);
+          //                   log('data listBarangSelected back : ${listBarangSelected.map((item) => '(${item.fdKodeBarang}, ${item.fdNamaBarang}, Qty: ${item.fdQty}, Satuan: ${item.fdJenisSatuan})').toList()}');
+          //                   log('data back: ${listKeranjang.map((item) => '(${item.fdKodeBarang}, ${item.fdNamaBarang}, Qty: ${item.fdQty}, Satuan: ${item.fdJenisSatuan})').toList()}');
+          //                 });
+          //               }
+          //             }
+          //           }
+          //     },
+          //   ),
+          // )
     );
   }
   void _updateTotalItems() {

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
+import 'package:crm_apps/new/helper/color_helper.dart';
+import 'package:crm_apps/new/helper/function_helper.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 // import 'package:crm_apps/orderform_page.dart';
@@ -136,21 +138,10 @@ class LayerSync extends State<SyncPage> {
   }
 
   Future<void> _confirmSyncData() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return SimpleDialog(
-            title: Container(
-                color: css.titleDialogColor(),
-                padding: const EdgeInsets.all(5),
-                child: const Text('Lanjut sinkron data?')),
-            titlePadding: EdgeInsets.zero,
-            contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-            children: [
-              ElevatedButton(
-                  onPressed: () async {
-                    try {
+    FunctionHelper.AlertDialogCip(
+      context,
+      DialogCip(title: 'Syncronize', message: 'Lanjut sinkron data?', ok: 'Ya',onOk: ()async{
+        try {
                       Navigator.pop(context);
 
                       await syncData(1);
@@ -166,21 +157,53 @@ class LayerSync extends State<SyncPage> {
                             .showSnackBar(SnackBar(content: Text('error: $e')));
                       }
                     }
-                  },
-                  child: const Text('Ya')),
-              ElevatedButton(
-                  onPressed: () {
-                    try {
-                      Navigator.pop(context);
-                    } catch (e) {
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(SnackBar(content: Text('error: $e')));
-                    }
-                  },
-                  child: const Text('Tidak'))
-            ]);
-      },
+      })
     );
+    // return showDialog<void>(
+    //   context: context,
+    //   barrierDismissible: false, // user must tap button!
+    //   builder: (BuildContext context) {
+    //     return SimpleDialog(
+    //         title: Container(
+    //             color: css.titleDialogColor(),
+    //             padding: const EdgeInsets.all(5),
+    //             child: const Text('Lanjut sinkron data?')),
+    //         titlePadding: EdgeInsets.zero,
+    //         contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+    //         children: [
+    //           ElevatedButton(
+    //               onPressed: () async {
+    //                 try {
+    //                   Navigator.pop(context);
+
+    //                   await syncData(1);
+    //                   initLoadPage();
+    //                 } catch (e) {
+    //                   if (e == 408) {
+    //                     ScaffoldMessenger.of(context).showSnackBar(
+    //                         const SnackBar(content: Text('Error timeout')));
+    //                     await sessionExpired();
+    //                   } else {
+    //                     if (!mounted) return;
+    //                     ScaffoldMessenger.of(context)
+    //                         .showSnackBar(SnackBar(content: Text('error: $e')));
+    //                   }
+    //                 }
+    //               },
+    //               child: const Text('Ya')),
+    //           ElevatedButton(
+    //               onPressed: () {
+    //                 try {
+    //                   Navigator.pop(context);
+    //                 } catch (e) {
+    //                   ScaffoldMessenger.of(context)
+    //                       .showSnackBar(SnackBar(content: Text('error: $e')));
+    //                 }
+    //               },
+    //               child: const Text('Tidak'))
+    //         ]);
+    //   },
+    // );
   }
 
   Future<void> syncData(int syncTipe) async {
@@ -610,18 +633,26 @@ class LayerSync extends State<SyncPage> {
           bottomNavigationBar: isLoading
               ? Center(
                   child: loadingProgress(ScaleSize.textScaleFactor(context)))
-              : Padding(
-                  padding: MediaQuery.of(context).viewInsets,
-                  child: BottomAppBar(
-                    height: 40 * ScaleSize.textScaleFactor(context),
-                    child: TextButton(
-                      onPressed: (() async {
-                        await _confirmSyncData();
-                      }),
-                      child: const Text('Synchronize'),
-                    ),
+              : InkWell(
+                onTap: ()async{
+                  await _confirmSyncData();
+                },
+                child: Ink(
+                  height: 70,
+                  color: ColorHelper.primary,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text('Synchronize', style: TextStyle(color: Colors.white,fontSize: 16, fontWeight: FontWeight.bold),),
+                      SizedBox(width: 5,),
+                      Icon(Icons.sync, color: Colors.white,)
+                    ],
                   ),
-                )),
+                ),
+              )
+              
+      )
     );
   }
 }

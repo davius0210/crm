@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:crm_apps/new/helper/color_helper.dart';
 import 'package:crm_apps/rencanarute_page.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -563,15 +564,13 @@ class LayerRencanaRuteForm extends State<RencanaRuteFormPage> {
                   ))),
       bottomNavigationBar: (isLoading
           ? const Padding(padding: EdgeInsets.zero)
-          : BottomAppBar(
-              height: 40 * ScaleSize.textScaleFactor(context),
-              child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Expanded(
-                      child: TextButton(
-                        onPressed: (widget.isEndDay
+          : Ink(
+            height: 70,
+            child: Row(
+              children: [
+                Expanded(
+                  child: InkWell(
+                    onTap: (widget.isEndDay
                             ? null
                             : () async {
                                 bool isDateTimeSettingValid =
@@ -598,17 +597,24 @@ class LayerRencanaRuteForm extends State<RencanaRuteFormPage> {
                                   }
                                 }
                               }),
-                        child: const Text('Back'),
+                    child: Ink(
+                      height: MediaQuery.of(context).size.height,
+                      color: widget.isEndDay ? ColorHelper.disable : ColorHelper.primary,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(Icons.chevron_left, color: Colors.white,),
+                          SizedBox(width: 5,),
+                          Text('Back', style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 16),),
+                        ],
                       ),
                     ),
-                    const VerticalDivider(
-                      width: 1,
-                      thickness: 1.5,
-                      color: Colors.grey,
-                    ),
-                    Expanded(
-                      child: TextButton(
-                        onPressed: (widget.isEndDay
+                  ),
+                ),
+                Expanded(
+                  child: InkWell(
+                    onTap: (widget.isEndDay
                             ? null
                             : () async {
                                 bool isDateTimeSettingValid =
@@ -711,12 +717,26 @@ class LayerRencanaRuteForm extends State<RencanaRuteFormPage> {
                                   }
                                 }
                               }),
-                        child: Text(
-                            currentDate!.isBefore(endDate!) ? 'Next' : 'Save'),
+                    child: Ink(
+                      height: MediaQuery.of(context).size.height,
+                      color: ColorHelper.secondary,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(currentDate!.isBefore(endDate!) ? 'Next' : 'Save', style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 16),),
+                          SizedBox(width: 5,),
+                          Icon(currentDate!.isBefore(endDate!) ? Icons.chevron_right : Icons.save, color: Colors.white,),
+                        ],
                       ),
                     ),
-                  ]),
-            )),
+                  ),
+                )
+              ],
+            ),
+          )
+          
+      )
     );
   }
 }

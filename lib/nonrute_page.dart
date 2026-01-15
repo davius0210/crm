@@ -1,3 +1,4 @@
+import 'package:crm_apps/new/helper/color_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:crm_apps/main.dart';
 import 'style/css.dart' as css;
@@ -172,10 +173,8 @@ class LayerNonRute extends State<NonRutePage> {
         ),
         bottomNavigationBar: (isLoading
             ? const Padding(padding: EdgeInsets.zero)
-            : BottomAppBar(
-                height: 40 * ScaleSize.textScaleFactor(context),
-                child: TextButton(
-                  onPressed: (widget.isEndDay
+            : InkWell(
+              onTap: (widget.isEndDay
                       ? null
                       : () async {
                           bool isDateTimeSettingValid =
@@ -185,9 +184,38 @@ class LayerNonRute extends State<NonRutePage> {
                             saveNonRute();
                           }
                         }),
-                  child: const Text('Confirm'),
-                ),
-              )),
+              child: Ink(
+                  height: 70,
+                  color: ColorHelper.primary,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text('Confirm', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),),
+                      SizedBox(width: 5,),
+                      Icon(Icons.check_circle,color: Colors.white,)
+                    ],
+                  ),
+              ),
+            )),
+            
+            
+            // BottomAppBar(
+            //     height: 40 * ScaleSize.textScaleFactor(context),
+            //     child: TextButton(
+            //       onPressed: (widget.isEndDay
+            //           ? null
+            //           : () async {
+            //               bool isDateTimeSettingValid =
+            //                   await cother.dateTimeSettingValidation();
+
+            //               if (isDateTimeSettingValid) {
+            //                 saveNonRute();
+            //               }
+            //             }),
+            //       child: const Text('Confirm'),
+            //     ),
+            //   )),
         body: isLoading
             ? Center(child: loadingProgress(ScaleSize.textScaleFactor(context)))
             : RefreshIndicator(

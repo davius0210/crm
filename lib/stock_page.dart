@@ -1,4 +1,7 @@
 import 'dart:io';
+import 'package:crm_apps/new/component/card_component.dart';
+import 'package:crm_apps/new/component/icon_button_component.dart';
+import 'package:crm_apps/new/helper/color_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:crm_apps/stockverification_page.dart';
@@ -239,6 +242,7 @@ class LayerStock extends State<StockPage> {
                   child: Text(
                       '${widget.user.fdKodeSF} - ${widget.user.fdNamaSF}',
                       style: css.textHeaderBold())),
+              
               Flexible(
                   child: Container(
                 padding: const EdgeInsets.all(5),
@@ -359,145 +363,91 @@ class LayerStock extends State<StockPage> {
             ])),
         bottomNavigationBar: isLoading
             ? const Padding(padding: EdgeInsets.zero)
-            : BottomAppBar(
-                padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                height: (150 * ScaleSize.textScaleFactor(context)),
-                color: Colors.grey.shade300, // Colors.green[100],
-                shape: const CircularNotchedRectangle(),
-                clipBehavior: Clip.hardEdge,
-                child:
-                    // SingleChildScrollView(
-                    //     padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                    //     scrollDirection: Axis.horizontal,
-                    //     child: Row(
-                    //         mainAxisAlignment: MainAxisAlignment.center,
-                    //         children: createMenu())),
-                    Column(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        color: Colors.green.shade300,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(children: [
-                            Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  settings: const RouteSettings(
-                                                      name: 'stockrequest'),
-                                                  builder: (context) =>
-                                                      StockRequestPage(
-                                                          user: widget.user,
-                                                          routeName:
-                                                              'stockrequest',
-                                                          isEndDay:
-                                                              widget.isEndDay,
-                                                          startDayDate: widget
-                                                              .startDayDate))).then(
-                                              (value) {
-                                            initLoadPage();
+            : Ink(
+              color: ColorHelper.primary,
+              height: 100,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: InkWell(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              settings: const RouteSettings(
+                                  name: 'stockrequest'),
+                              builder: (context) =>
+                                  StockRequestPage(
+                                      user: widget.user,
+                                      routeName:
+                                          'stockrequest',
+                                      isEndDay:
+                                          widget.isEndDay,
+                                      startDayDate: widget
+                                          .startDayDate))).then(
+                          (value) {
+                        initLoadPage();
 
-                                            setState(() {});
-                                          });
-                                        },
-                                        child: Column(
-                                          children: [
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color: Colors.orange,
-                                                    width: 1),
-                                              ),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(4),
-                                                child: Image.asset(
-                                                  'assets/images/stockRequest.png',
-                                                  alignment: Alignment.center,
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(height: 4),
-                                            const Text(
-                                              'Stock Request',
-                                              style: TextStyle(fontSize: 10),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  settings: const RouteSettings(
-                                                      name:
-                                                          'stockverification'),
-                                                  builder: (context) =>
-                                                      StockVerificationPage(
-                                                          user: widget.user,
-                                                          routeName:
-                                                              'stockverification',
-                                                          isEndDay:
-                                                              widget.isEndDay,
-                                                          startDayDate: widget
-                                                              .startDayDate))).then(
-                                              (value) {
-                                            initLoadPage();
+                        setState(() {});
+                      });
+                      },
+                      child: Ink(
+                        height: MediaQuery.of(context).size.height,
+                        color: ColorHelper.primary,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image(image: AssetImage('assets/images/icon-stock-white.png'),width: 40,),
+                            Flexible(child: Text('Stock Request', style: TextStyle(color: Colors.white),))
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: InkWell(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              settings: const RouteSettings(
+                                  name:
+                                      'stockverification'),
+                              builder: (context) =>
+                                  StockVerificationPage(
+                                      user: widget.user,
+                                      routeName:
+                                          'stockverification',
+                                      isEndDay:
+                                          widget.isEndDay,
+                                      startDayDate: widget
+                                          .startDayDate))).then(
+                          (value) {
+                        initLoadPage();
 
-                                            setState(() {});
-                                          });
-                                        },
-                                        child: Column(
-                                          children: [
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color: Colors.orange,
-                                                    width: 1),
-                                              ),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(4),
-                                                child: Image.asset(
-                                                  'assets/images/stockVerification.png',
-                                                  alignment: Alignment.center,
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(height: 4),
-                                            const Text(
-                                              'Stock Verification',
-                                              style: TextStyle(fontSize: 10),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
+                        setState(() {});
+                      });
+                      },
+                      child: Ink(
+                        height: MediaQuery.of(context).size.height,
+                        color: ColorHelper.secondary,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image(image: AssetImage('assets/images/icon-stock-verification-white.png'),width: 40,),
+                            Flexible(child: Text('Stock Verification', style: TextStyle(color: Colors.white),))
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: InkWell(
+                      onTap: (){
+                        Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                   settings: const RouteSettings(
@@ -516,42 +466,241 @@ class LayerStock extends State<StockPage> {
 
                                             setState(() {});
                                           });
-                                        },
-                                        child: Column(
-                                          children: [
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color: Colors.orange,
-                                                    width: 1),
-                                              ),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(4),
-                                                child: Image.asset(
-                                                  'assets/images/unloadingStock.png',
-                                                  alignment: Alignment.center,
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(height: 4),
-                                            const Text(
-                                              'Unloading Stock',
-                                              style: TextStyle(fontSize: 10),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ]),
-                          ]),
+                      },
+                      child: Ink(
+                        height: MediaQuery.of(context).size.height,
+                        color: ColorHelper.color24,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image(image: AssetImage('assets/images/icon-unload-white.png'),width: 40,),
+                            Flexible(child: Text('Unloading Stock', style: TextStyle(color: Colors.white),))
+                          ],
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  // IconButtonComponent(
+                  //   color: Colors.white,
+                  //   style: TextStyle(color: Colors.white),
+                  //   child: Image(image: AssetImage('assets/images/icon-stock.png'),),
+                  //   label: 'Stock Request',
+                    
+                  // ),
+                  // IconButtonComponent(
+                  //   color: Colors.white,
+                  //   style: TextStyle(color: Colors.white),
+                  //   child: Image(image: AssetImage('assets/images/icon-stock-verification.png'),),
+                  //   label: 'Stock Verification'
+                  // ),
+                  // IconButtonComponent(
+                  //   color: Colors.white,
+                  //   style: TextStyle(color: Colors.white),
+                  //   child: Image(image: AssetImage('assets/images/icon-unload.png'),),
+                  //   label: 'Unloading Stock'
+                  // ),
+                ],
               ),
+            )
+            
+            
+            
+            // BottomAppBar(
+            //     padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+            //     height: (150 * ScaleSize.textScaleFactor(context)),
+            //     color: Colors.grey.shade300, // Colors.green[100],
+            //     shape: const CircularNotchedRectangle(),
+            //     clipBehavior: Clip.hardEdge,
+            //     child:
+            //         // SingleChildScrollView(
+            //         //     padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+            //         //     scrollDirection: Axis.horizontal,
+            //         //     child: Row(
+            //         //         mainAxisAlignment: MainAxisAlignment.center,
+            //         //         children: createMenu())),
+            //         Column(
+            //       children: [
+            //         Expanded(
+            //           child: Container(
+            //             color: Colors.green.shade300,
+            //             child: Padding(
+            //               padding: const EdgeInsets.all(16),
+            //               child: Column(children: [
+            //                 Row(
+            //                     mainAxisAlignment:
+            //                         MainAxisAlignment.spaceEvenly,
+            //                     children: [
+            //                       Column(
+            //                         crossAxisAlignment:
+            //                             CrossAxisAlignment.start,
+            //                         children: [
+            //                           GestureDetector(
+            //                             onTap: () {
+            //                               Navigator.push(
+            //                                   context,
+            //                                   MaterialPageRoute(
+            //                                       settings: const RouteSettings(
+            //                                           name: 'stockrequest'),
+            //                                       builder: (context) =>
+            //                                           StockRequestPage(
+            //                                               user: widget.user,
+            //                                               routeName:
+            //                                                   'stockrequest',
+            //                                               isEndDay:
+            //                                                   widget.isEndDay,
+            //                                               startDayDate: widget
+            //                                                   .startDayDate))).then(
+            //                                   (value) {
+            //                                 initLoadPage();
+
+            //                                 setState(() {});
+            //                               });
+            //                             },
+            //                             child: Column(
+            //                               children: [
+            //                                 Container(
+            //                                   decoration: BoxDecoration(
+            //                                     border: Border.all(
+            //                                         color: Colors.orange,
+            //                                         width: 1),
+            //                                   ),
+            //                                   child: Padding(
+            //                                     padding:
+            //                                         const EdgeInsets.all(4),
+            //                                     child: Image.asset(
+            //                                       'assets/images/stockRequest.png',
+            //                                       alignment: Alignment.center,
+            //                                     ),
+            //                                   ),
+            //                                 ),
+            //                                 const SizedBox(height: 4),
+            //                                 const Text(
+            //                                   'Stock Request',
+            //                                   style: TextStyle(fontSize: 10),
+            //                                 ),
+            //                               ],
+            //                             ),
+            //                           ),
+            //                         ],
+            //                       ),
+            //                       Column(
+            //                         crossAxisAlignment:
+            //                             CrossAxisAlignment.start,
+            //                         children: [
+            //                           GestureDetector(
+            //                             onTap: () {
+            //                               Navigator.push(
+            //                                   context,
+            //                                   MaterialPageRoute(
+            //                                       settings: const RouteSettings(
+            //                                           name:
+            //                                               'stockverification'),
+            //                                       builder: (context) =>
+            //                                           StockVerificationPage(
+            //                                               user: widget.user,
+            //                                               routeName:
+            //                                                   'stockverification',
+            //                                               isEndDay:
+            //                                                   widget.isEndDay,
+            //                                               startDayDate: widget
+            //                                                   .startDayDate))).then(
+            //                                   (value) {
+            //                                 initLoadPage();
+
+            //                                 setState(() {});
+            //                               });
+            //                             },
+            //                             child: Column(
+            //                               children: [
+            //                                 Container(
+            //                                   decoration: BoxDecoration(
+            //                                     border: Border.all(
+            //                                         color: Colors.orange,
+            //                                         width: 1),
+            //                                   ),
+            //                                   child: Padding(
+            //                                     padding:
+            //                                         const EdgeInsets.all(4),
+            //                                     child: Image.asset(
+            //                                       'assets/images/stockVerification.png',
+            //                                       alignment: Alignment.center,
+            //                                     ),
+            //                                   ),
+            //                                 ),
+            //                                 const SizedBox(height: 4),
+            //                                 const Text(
+            //                                   'Stock Verification',
+            //                                   style: TextStyle(fontSize: 10),
+            //                                 ),
+            //                               ],
+            //                             ),
+            //                           ),
+            //                         ],
+            //                       ),
+            //                       Column(
+            //                         crossAxisAlignment:
+            //                             CrossAxisAlignment.start,
+            //                         children: [
+            //                           GestureDetector(
+            //                             onTap: () {
+            //                               Navigator.push(
+            //                                   context,
+            //                                   MaterialPageRoute(
+            //                                       settings: const RouteSettings(
+            //                                           name: 'unloading'),
+            //                                       builder: (context) =>
+            //                                           StockUnloadingPage(
+            //                                               user: widget.user,
+            //                                               isEndDay:
+            //                                                   widget.isEndDay,
+            //                                               routeName:
+            //                                                   'unloading',
+            //                                               startDayDate: widget
+            //                                                   .startDayDate))).then(
+            //                                   (value) {
+            //                                 initLoadPage();
+
+            //                                 setState(() {});
+            //                               });
+            //                             },
+            //                             child: Column(
+            //                               children: [
+            //                                 Container(
+            //                                   decoration: BoxDecoration(
+            //                                     border: Border.all(
+            //                                         color: Colors.orange,
+            //                                         width: 1),
+            //                                   ),
+            //                                   child: Padding(
+            //                                     padding:
+            //                                         const EdgeInsets.all(4),
+            //                                     child: Image.asset(
+            //                                       'assets/images/unloadingStock.png',
+            //                                       alignment: Alignment.center,
+            //                                     ),
+            //                                   ),
+            //                                 ),
+            //                                 const SizedBox(height: 4),
+            //                                 const Text(
+            //                                   'Unloading Stock',
+            //                                   style: TextStyle(fontSize: 10),
+            //                                 ),
+            //                               ],
+            //                             ),
+            //                           ),
+            //                         ],
+            //                       ),
+            //                     ]),
+            //               ]),
+            //             ),
+            //           ),
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+      
+      
       ),
     );
   }

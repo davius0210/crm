@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:crm_apps/new/component/custom_button_component.dart';
+import 'package:crm_apps/new/helper/color_helper.dart';
 import 'package:device_info_ce/device_info_ce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -772,11 +774,9 @@ class LayerNOOSave extends State<NooFormPage> {
               ? loadingProgress(ScaleSize.textScaleFactor(context))
               : Padding(
                   padding: MediaQuery.of(context).viewInsets,
-                  child: BottomAppBar(
-                      height: 40 * ScaleSize.textScaleFactor(context),
-                      child: TextButton(
-                        onPressed: () async {
-                          try {
+                  child: InkWell(
+                    onTap: ()async{
+                      try {
                             if (!mounted) return;
 
                             setState(() {
@@ -1232,9 +1232,23 @@ class LayerNOOSave extends State<NooFormPage> {
                               isLoading = false;
                             });
                           }
-                        },
-                        child: const Text('Save'),
-                      )),
+                    },
+                    child: Ink(
+                      height: 70,
+                      color: ColorHelper.primary,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text('Save', style: TextStyle(color: Colors.white,fontSize: 16, fontWeight: FontWeight.bold),),
+                          SizedBox(width: 5,),
+                          Icon(Icons.save, color: Colors.white,)
+                        ],
+                      ),
+                    ),
+                  )
+                  
+                  
                 ),
           body: RefreshIndicator(
             triggerMode: RefreshIndicatorTriggerMode.anywhere,
@@ -1267,6 +1281,7 @@ class LayerNOOSave extends State<NooFormPage> {
                             ),
                             const Padding(padding: EdgeInsets.all(5)),
                             DropdownSearch<mdetail.TipeDetail>(
+                              compareFn: (item, selectedItem) => item.fdKode == selectedItem.fdKode,
                               itemAsString: (mdetail.TipeDetail item) =>
                                   '${item.fdNamaDetail}',
                               items: (String filter, LoadProps? loadProps) =>ListBadanUsaha,
@@ -1484,6 +1499,7 @@ class LayerNOOSave extends State<NooFormPage> {
                             ),
                             const Padding(padding: EdgeInsets.all(8)),
                             DropdownSearch<mprov.Propinsi>(
+                              compareFn: (item, selectedItem) => item.fdKodePropinsi == selectedItem.fdKodePropinsi,
                               itemAsString: (mprov.Propinsi item) =>
                                   '${item.fdKodePropinsi} - ${item.fdNamaPropinsi}',
                               items: (String filter, LoadProps? loadProps) =>ListProvinsi,
@@ -1545,6 +1561,8 @@ class LayerNOOSave extends State<NooFormPage> {
                             ),
                             const Padding(padding: EdgeInsets.all(8)),
                             DropdownSearch<mkab.Kabupaten>(
+                              compareFn: (item, selectedItem) => item.fdKodeKabupaten == selectedItem.fdKodeKabupaten,
+                              
                               itemAsString: (mkab.Kabupaten item) =>
                                   '${item.fdKodeKabupaten} - ${item.fdNamaKabupaten}',
                               items: (String filter, LoadProps? loadProps) =>ListKabupaten,
@@ -1606,6 +1624,8 @@ class LayerNOOSave extends State<NooFormPage> {
                             ),
                             const Padding(padding: EdgeInsets.all(8)),
                             DropdownSearch<mkec.Kecamatan>(
+                              compareFn: (item, selectedItem) => item.fdKodeKecamatan == selectedItem.fdKodeKecamatan,
+                              
                               itemAsString: (mkec.Kecamatan item) =>
                                   '${item.fdKodeKecamatan} - ${item.fdNamaKecamatan}',
                               items: (String filter, LoadProps? loadProps) =>ListKecamatan,
@@ -1666,6 +1686,8 @@ class LayerNOOSave extends State<NooFormPage> {
                             ),
                             const Padding(padding: EdgeInsets.all(8)),
                             DropdownSearch<mkel.Kelurahan>(
+                              compareFn: (item, selectedItem) => item.fdKodeKelurahan == selectedItem.fdKodeKelurahan,
+                              
                               itemAsString: (mkel.Kelurahan item) =>
                                   '${item.fdKodeKelurahan} - ${item.fdNamaKelurahan}',
                               items: (String filter, LoadProps? loadProps) =>ListKelurahan,
@@ -1749,40 +1771,36 @@ class LayerNOOSave extends State<NooFormPage> {
                             isLoading
                                 ? loadingProgress(
                                     ScaleSize.textScaleFactor(context))
-                                : SizedBox(
-                                    width: MediaQuery.of(context).size.width,
-                                    child: ElevatedButton.icon(
-                                      onPressed: () async {
-                                        final result = await Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => VisitPage(
-                                                    routeName:
-                                                        widget.routeName)));
-
-                                        if (result != null) {
-                                          if (!mounted) return;
-
-                                          setState(() {
-                                            doubleLA = result[0];
-                                            doubleLG = result[1];
-                                            fdLA = result[0].toString();
-                                            fdLG = result[1].toString();
-
-                                            LaLg = '$fdLA, $fdLG';
-                                          });
-                                        }
-                                      },
-                                      icon: Icon(
-                                        Icons.map,
-                                        color: const Color.fromARGB(
-                                            255, 252, 172, 0),
-                                        size: 24 *
-                                            ScaleSize.textScaleFactor(context),
-                                      ),
-                                      label: Text(
-                                          LaLg == '' ? 'Lokasi Toko' : LaLg),
-                                    )),
+                                : Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  child: CustomButtonComponent(
+                                    icon: Icon(Icons.map, color: Colors.white,),
+                                    title: LaLg == '' ? 'Lokasi Toko' : LaLg,
+                                    onPressed: ()async{
+                                      final result = await Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => VisitPage(
+                                                      routeName:
+                                                          widget.routeName)));
+                                  
+                                          if (result != null) {
+                                            if (!mounted) return;
+                                  
+                                            setState(() {
+                                              doubleLA = result[0];
+                                              doubleLG = result[1];
+                                              fdLA = result[0].toString();
+                                              fdLG = result[1].toString();
+                                  
+                                              LaLg = '$fdLA, $fdLG';
+                                            });
+                                          }
+                                    },
+                                  ),
+                                ),
+                                
+                                
                             const Padding(padding: EdgeInsets.all(8)),
                             TextFormField(
                               controller: _patokan,
@@ -1810,6 +1828,8 @@ class LayerNOOSave extends State<NooFormPage> {
                             ),
                             const Padding(padding: EdgeInsets.all(8)),
                             DropdownSearch<mdetail.TipeDetail>(
+                              compareFn: (item, selectedItem) => item.fdKode == selectedItem.fdKode,
+                              
                               itemAsString: (mdetail.TipeDetail item) =>
                                   '${item.fdKode} - ${item.fdNamaDetail}',
                               items: (String filter, LoadProps? loadProps) =>ListKelasOutlet,
@@ -1864,6 +1884,7 @@ class LayerNOOSave extends State<NooFormPage> {
                             ),
                             const Padding(padding: EdgeInsets.all(8)),
                             DropdownSearch<mtpoutlet.TipeOutlet>(
+                              compareFn: (item, selectedItem) => item.fdKodeTipe == selectedItem.fdKodeTipe,
                               itemAsString: (mtpoutlet.TipeOutlet item) =>
                                   '${item.fdKodeTipe} - ${item.fdTipeOutlet}',
                               items: (String filter, LoadProps? loadProps) =>ListTipeOutlet,
@@ -2706,30 +2727,32 @@ class LayerVisit extends State<VisitPage> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Lokasi Toko'),
+          actions: [
+            CustomButtonComponent(
+                title: 'Pilih',
+                icon: Icon(Icons.check_circle),
+
+                onPressed: isMapReady ? (){
+                Navigator.pop(context, [
+                          _userLocation.target.latitude,
+                          _userLocation.target.longitude
+                        ]);
+              } : null,
+            ),
+            SizedBox(width: 5,)
+            
+          ],
         ),
         body: Column(
           children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.8,
-              child: GoogleMap(
+           Expanded(child: GoogleMap(
                   myLocationEnabled: true,
                   myLocationButtonEnabled: true,
                   mapType: MapType.normal,
                   markers: Set<Marker>.of(markers.values),
                   initialCameraPosition: _userLocation,
-                  onMapCreated: gMapInitializes),
-            ),
-            const Padding(padding: EdgeInsets.all(4)),
-            (isMapReady
-                ? ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context, [
-                        _userLocation.target.latitude,
-                        _userLocation.target.longitude
-                      ]);
-                    },
-                    child: const Text('OK'))
-                : loadingProgress(ScaleSize.textScaleFactor(context)))
+                  onMapCreated: gMapInitializes),),
+           
           ],
         ));
   }

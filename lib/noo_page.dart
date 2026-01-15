@@ -465,7 +465,7 @@ class LayerNOO extends State<NOOPage> {
                       });
                     },
                     child: Icon(Icons.add,
-                        size: 24 * ScaleSize.textScaleFactor(context)),
+                        size: 24 * ScaleSize.textScaleFactor(context), color: Colors.white,),
                   )
                 : null);
   }

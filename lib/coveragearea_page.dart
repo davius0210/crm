@@ -173,9 +173,8 @@ class LayerCoverageArea extends State<CoverageAreaPage> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.85,
-              width: MediaQuery.of(context).size.width,
+            Expanded(
+           
               child: GoogleMap(
                   myLocationEnabled: true,
                   myLocationButtonEnabled: true,
